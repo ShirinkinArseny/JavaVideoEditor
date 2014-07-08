@@ -5,6 +5,7 @@ import JVE.Main;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 
 public class Scene extends SceneLayer {
 
@@ -13,6 +14,18 @@ public class Scene extends SceneLayer {
     private int frames;
     private int width, height;
     private String audioURL=null;
+    private String source;
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(ArrayList<String> src) {
+        source="";
+        for (String c: src)
+            source+=c+";;;";
+        source=source.substring(0, source.length()-1);
+    }
 
     private static String getName(int i) {
         String num= String.valueOf(i);

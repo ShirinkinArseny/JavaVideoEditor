@@ -8,12 +8,13 @@ import java.net.Socket;
 
 public class ClientConnection extends Connection{
 
-    public ClientConnection(String ip, int port) {
+    public ClientConnection(String ip, int port, ConnectionEvent connectionEvent) throws Exception {
         try {
             Socket clientSocket;
             clientSocket = new Socket(ip, port);
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            setOnInputEvent(connectionEvent);
             startWorking(in, out);
         } catch (IOException e) {
             System.err.println("[ClientConnection] failed to init");

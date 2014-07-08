@@ -32,10 +32,12 @@ public class Server {
                     Socket client = server.accept();
                     ServerConnection cl = new ServerConnection(client);
                     clients.add(cl);
-                    cl.setOnInputEvent(() -> {
-                        String lastMessage = cl.getLastInputMessage();
-                        event.run(cl, lastMessage);
-                        printMessage("[Server] Incoming message: " + lastMessage);
+                    cl.setOnInputEvent(new ConnectionEvent() {
+                        @Override
+                        public void run(Connection c, String message) throws Exception {
+                            event.run(c, message);
+                            printMessage("[Server] Incoming message: " + message);
+                        }
                     });
                     cl.setOnCloseEvent(() -> {
                         printMessage("[Server] Disconnected client: " + client.getInetAddress().toString());

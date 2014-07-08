@@ -12,9 +12,7 @@ import static JVE.Parsers.ParseUtils.printMessage;
 import static JVE.Parsers.Preprocess.preprocess;
 import static JVE.Parsers.SceneBlockParser.parseSceneBlock;
 import static JVE.Parsers.VideoBlockParser.parseVideoBlock;
-import static JVE.RenderServer.renderScenes;
-import static JVE.RenderServer.setIP;
-import static JVE.RenderServer.setPort;
+import static JVE.RenderServer.*;
 
 public class SyntaxParser {
 
@@ -59,6 +57,7 @@ public class SyntaxParser {
                 int port = Integer.valueOf(getArguments(code.get(i))[0]);
                 printMessage("Becoming server, port: " + port);
                 setPort(port);
+                setRender(VideoFramesRenderType.Server);
                 continue;
             }
 
@@ -68,6 +67,7 @@ public class SyntaxParser {
                 printMessage("Becoming client, port: " + port+", server ip: "+ip);
                 setPort(port);
                 setIP(ip);
+                setRender(VideoFramesRenderType.Client);
                 continue;
             }
 
@@ -84,7 +84,6 @@ public class SyntaxParser {
             }
 
             if (code.get(i).startsWith("\\begin{video}")) {
-                runInjections();
                 ArrayList<String> s = new ArrayList<>();
                 for (int j = i + 1; j < code.size(); j++) {
                     s.add(code.get(j));

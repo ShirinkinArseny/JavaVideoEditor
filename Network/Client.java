@@ -13,13 +13,7 @@ public class Client {
         event=r;
     }
 
-    public Client(String ip, int port){
-        client=new ClientConnection(ip, port);
-        client.setOnInputEvent(new Runnable() {
-            @Override
-            public void run() {
-                event.run(client, client.getLastInputMessage());
-            }
-        });
+    public Client(String ip, int port, ConnectionEvent onstart) throws Exception {
+        client=new ClientConnection(ip, port, onstart);
     }
 }

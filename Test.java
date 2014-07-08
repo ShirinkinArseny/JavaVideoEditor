@@ -3,7 +3,7 @@ package JVE;
 public class Test {
 
     public static void main(String[] args) throws Exception {
-        Main.main(new String[]{"/home/nameless/Projects/ЭОРСРЯ/video.tex"});
+        Main.main(new String[]{"/home/nameless/Desktop/test.tex"});
 
         /*MathParser.init();
         BufferedImage b= ImageIO.read(new File("/home/nameless/Octocat.png"));

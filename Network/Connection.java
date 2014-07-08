@@ -12,7 +12,7 @@ public class Connection {
 
     private LinkedList<String> messages = new LinkedList<>();
     private String lastInput;
-    private Runnable event;
+    private ConnectionEvent event;
     private Runnable close;
     AtomicBoolean isWorking = new AtomicBoolean(true);
 
@@ -24,7 +24,7 @@ public class Connection {
         close = r;
     }
 
-    public void setOnInputEvent(Runnable r) {
+    public void setOnInputEvent(ConnectionEvent r) {
         event = r;
     }
 
@@ -43,13 +43,19 @@ public class Connection {
         }
     }
 
-    public void startWorking(BufferedReader in, PrintWriter out) throws IOException {
+    public void startWorking(BufferedReader in, PrintWriter out) throws Exception {
         new Thread(() -> {
             try {
-                String input;
-                while ((input = in.readLine()) != null) {
+                String input= in.readLine();
+                while (input != null) {
                     lastInput = input;
-                    event.run();
+                    try {
+                        event.run(this, lastInput);
+                    }
+                    catch (Exception ex) {
+                        System.err.println("FUUUU"+ex+" "+lastInput+" "+this);
+                    }
+                    input= in.readLine();
                 }
             } catch (IOException e) {
                 System.err.println("[Connection] Error pt1 : " + e);

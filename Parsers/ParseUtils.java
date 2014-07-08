@@ -3,6 +3,8 @@ package JVE.Parsers;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 
 public class ParseUtils {
@@ -26,6 +28,15 @@ public class ParseUtils {
         }
         exit("File "+name+" not fount in path directories");
         return null;
+    }
+
+    public static ArrayList<File> getFiles(File dir) {
+        String[] files = dir.list();
+        ArrayList<File> fs=new ArrayList<>();
+        for (String file : files) {
+            fs.add(new File(dir, file));
+        }
+        return fs;
     }
 
     public static ArrayList<String> readLines(String fileName) throws Exception {
