@@ -30,9 +30,7 @@ public class Server {
                 server = new ServerSocket(port);
                 while (true) {
                     Socket client = server.accept();
-                    ServerConnection cl = new ServerConnection(client);
-                    clients.add(cl);
-                    cl.setOnInputEvent(new ConnectionEvent() {
+                    ServerConnection cl = new ServerConnection(client, new ConnectionEvent() {
                         @Override
                         public void run(Connection c, String message) throws Exception {
                             event.run(c, message);
@@ -43,6 +41,7 @@ public class Server {
                         printMessage("[Server] Disconnected client: " + client.getInetAddress().toString());
                         clients.remove(cl);
                     });
+                    clients.add(cl);
                     event.run(cl, "CONNECTED");
                     printMessage("[Server] Got client: " + client.getInetAddress());
 

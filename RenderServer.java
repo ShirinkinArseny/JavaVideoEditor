@@ -117,7 +117,7 @@ public class RenderServer {
                     command[0]="";
                 } else if (command[0].startsWith("FRAME")) {
                     printMessage("Frames catched");
-                    String base64 = message.substring(5);
+                    String base64 = command[0].substring(5);
                     printMessage("Frames stringed");
                     File fromBase = fromBase64(base64, "/home/nameless/fromBase.jzf");
                     printMessage("Frames debased");
@@ -147,7 +147,7 @@ public class RenderServer {
                     printMessage("Starting render scene");
                     cleanTempDir();
                     printMessage("Tempfolder cleaned");
-                    String[] code = message.substring(5).split("\n");
+                    String[] code = command[0].substring(5).split("\n");
                     ArrayList<String> src = new ArrayList<>();
                     Collections.addAll(src, code);
                     printMessage("Arguments divided");
@@ -165,7 +165,7 @@ public class RenderServer {
                     c.sendMessage("END");
                     command[0]="";
                 } else if (command[0].startsWith("MACROS")) {
-                    String[] commands = message.substring(6).split("\n");
+                    String[] commands = command[0].substring(6).split("\n");
                     ArrayList<String> macro = new ArrayList<>();
                     Collections.addAll(macro, commands);
                     try {
@@ -176,7 +176,7 @@ public class RenderServer {
                     }
                     command[0]="";
                 } else if (command[0].startsWith("INJECTION")) {
-                    MathParser.addInjection(message.substring(9));
+                    MathParser.addInjection(command[0].substring(9));
                     try {
                         runInjections();
                         printMessage("Injected");

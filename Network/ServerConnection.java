@@ -8,7 +8,8 @@ import java.net.Socket;
 
 public class ServerConnection extends Connection{
 
-    public ServerConnection(Socket client) throws Exception {
+    public ServerConnection(Socket client, ConnectionEvent c) throws Exception {
+        setOnInputEvent(c);
         startWorking(new BufferedReader(new InputStreamReader(client.getInputStream())),
                 new PrintWriter(client.getOutputStream(), true));
     }
