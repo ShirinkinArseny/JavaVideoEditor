@@ -92,36 +92,42 @@ public class RenderServer {
 
         ArrayList<Scene> scenesClone=new ArrayList<>();
         for (Scene s: scenes)
-        scenesClone.add(s);
+            scenesClone.add(s);
 
         Server server=new Server(port);
         final String[] command = {""};
         server.setOnInputEvent((c, message) -> {
+            printMessage("Incoming message: "+message);
             if (message.startsWith("END")) {
                 if (command[0].startsWith("CONNECTED")) {
                     if (!getInjections().equals("")) {
                         c.sendMessage("INJECTION " + MathParser.getInjections());
                         c.sendMessage("END");
+                        printMessage("Injections sent");
                     }
                     for (Macros m : Macros.getMacroses()) {
                         c.sendMessage("MACROS " + m.getCode());
                         c.sendMessage("END");
+                        printMessage("Macroses sent");
                     }
-                    c.sendMessage("PREPARE");
-                    c.sendMessage("END");
+                    c.sendMessage("PREPARE\nEND");
                     command[0]="";
                 } else if (command[0].startsWith("REQUEST")) {
 
                     command[0]="";
                 } else if (command[0].startsWith("FRAME")) {
+                    printMessage("Frames catched");
                     String base64 = message.substring(5);
+                    printMessage("Frames stringed");
                     File fromBase = fromBase64(base64, "/home/nameless/fromBase.jzf");
+                    printMessage("Frames debased");
                     unzip(fromBase, Main.tempDir);
+                    printMessage("Frames unzipped");
                     command[0]="";
-                    c.sendMessage("END");
                 } else if (command[0].startsWith("DONE")) {
-                    c.sendMessage("SCENE " + scenesClone.get(0).getSource());
-                    c.sendMessage("END");
+                    printMessage("Starting send scene");
+                    c.sendMessage("SCENE " + scenesClone.get(0).getSource()+"\nEND");
+                    printMessage("Scene sent");
                     scenesClone.remove(0);
                     //todo: intelligent system
                     command[0]="";
@@ -135,47 +141,58 @@ public class RenderServer {
         printMessage("Starting client work...");
         final String[] command = {""};
         Client client =new Client(ip, port, (c, message) -> {
-            System.out.println("START CALCING");
+            System.out.println("Incoming message: "+message);
             if (message.startsWith("END")) {
                 if (command[0].startsWith("SCENE")) {
+                    printMessage("Starting render scene");
                     cleanTempDir();
+                    printMessage("Tempfolder cleaned");
                     String[] code = message.substring(5).split("\n");
                     ArrayList<String> src = new ArrayList<>();
                     Collections.addAll(src, code);
+                    printMessage("Arguments divided");
                     Scene s = SceneBlockParser.parseSceneBlock(src);
                     s.render(0);
-
+                    printMessage("Scene has been rendered");
                     ArrayList<File> files = getFiles(new File(Main.tempDir));
                     zip(files, Main.tempDir + "archive.jzf");
+                    printMessage("Frames zipped");
                     String base64 = toBase64(new File("/home/nameless/archive.jzf"));
+                    printMessage("Zip base64ed");
                     c.sendMessage("FRAME " + base64);
                     c.sendMessage("END");
                     c.sendMessage("DONE");
                     c.sendMessage("END");
+                    command[0]="";
                 } else if (command[0].startsWith("MACROS")) {
                     String[] commands = message.substring(6).split("\n");
                     ArrayList<String> macro = new ArrayList<>();
                     Collections.addAll(macro, commands);
                     try {
                         Macros.parseMacros(macro);
+                        printMessage("Macro parsed");
                     } catch (Exception e) {
                         exit("Failed to parse macros");
                     }
+                    command[0]="";
                 } else if (command[0].startsWith("INJECTION")) {
                     MathParser.addInjection(message.substring(9));
                     try {
                         runInjections();
+                        printMessage("Injected");
                     } catch (Exception e) {
                         exit("Failed to parse js-injection");
                     }
+                    command[0]="";
                 } else if (command[0].startsWith("PREPARE")) {
-                    c.sendMessage("DONE");
-                    c.sendMessage("END");
+                    c.sendMessage("DONE\nEND");
+                    printMessage("Prepared");
+                    command[0]="";
                 }
             }
             else command[0] +=message+"\n";
         });
-        client.sendMessage("CONNECTED");
+        client.sendMessage("CONNECTED\nEND");
     }
 
     public static void renderScenes(ArrayList<Scene> scenes, int fps, int w, int h) throws Exception {
