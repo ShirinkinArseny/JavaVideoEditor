@@ -4,6 +4,7 @@ import JVE.Parsers.MathParser;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public abstract class Command {
 
@@ -11,6 +12,10 @@ public abstract class Command {
 
     private static Color c;
     private static Font f;
+
+    public ArrayList<String> getUsedFilesList() {
+        return new ArrayList<>();
+    }
 
     public String [][] divideChanels(String[] straight, String[] effected, String[] args) {
         String[][] chanelMap = new String[][]{straight, straight, straight, straight};

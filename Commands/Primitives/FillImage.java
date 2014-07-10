@@ -8,11 +8,18 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 
 public class FillImage extends Command {
 
     private java.awt.image.BufferedImage image;
     private String[] params;
+
+    public ArrayList<String> getUsedFilesList() {
+        ArrayList<String> urls=new ArrayList<>();
+        urls.add(params[0]);
+        return urls;
+    }
 
     public FillImage(String[] s) throws Exception {
         params=new String[s.length];

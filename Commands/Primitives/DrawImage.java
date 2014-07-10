@@ -5,6 +5,7 @@ import JVE.Parsers.MathParser;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import static JVE.Parsers.ParseUtils.getFile;
 
@@ -13,12 +14,20 @@ public class DrawImage extends Command {
     private java.awt.image.BufferedImage image;
     private String[] params;
 
+    public ArrayList<String> getUsedFilesList() {
+        ArrayList<String> urls=new ArrayList<>();
+        urls.add(params[0]);
+        return urls;
+    }
+
     public DrawImage(String[] s) throws Exception {
 
         params=new String[s.length];
         for (int i=0; i<s.length; i++)
             if (i!=0)
             params[i]= MathParser.prepareExpression(s[i]);
+        else
+                params[i]= s[i];
         try {
             image= ImageIO.read(getFile(s[0]));
         } catch (Exception e) {

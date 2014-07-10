@@ -1,6 +1,6 @@
 package JVE.Network;
 
-public interface ConnectionEvent {
+public interface OnInputCommandEvent {
 
     public void run(Connection c, String message) throws Exception;
 

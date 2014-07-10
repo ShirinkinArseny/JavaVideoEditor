@@ -5,7 +5,8 @@ import JVE.Parsers.SyntaxParser;
 
 public class Main {
 
-    public static final String tempDir="/home/nameless/Desktop/temp2/";
+    public static String tempDir="/home/nameless/Desktop/temp2/";
+    public static String tempDirForIncludes="/home/nameless/Desktop/temp2/";
 
     public static void main(String [] args) throws Exception {
         MathParser.init();

@@ -26,4 +26,12 @@ public class SceneLayer {
     public SceneLayer() {
     }
 
+    public ArrayList<String> getUsedFilesList() {
+        ArrayList<String> used=new ArrayList<>();
+        for (Command c: commands) {
+                used.addAll(c.getUsedFilesList());
+        }
+        return used;
+    }
+
 }

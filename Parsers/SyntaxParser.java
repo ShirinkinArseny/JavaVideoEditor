@@ -5,7 +5,6 @@ import JVE.Rendering.Scene;
 import java.util.ArrayList;
 
 import static JVE.Parsers.MathParser.addInjection;
-import static JVE.Parsers.MathParser.runInjections;
 import static JVE.Parsers.ParseUtils.exit;
 import static JVE.Parsers.ParseUtils.getArguments;
 import static JVE.Parsers.ParseUtils.printMessage;
@@ -24,7 +23,7 @@ public class SyntaxParser {
         return h;
     }
 
-    public static float getFPS() {
+    public static int getFPS() {
         return fps;
     }
 
@@ -108,4 +107,9 @@ public class SyntaxParser {
         scenes.add(parseSceneBlock(code));
     }
 
+    public static void setBases(int fps, int w, int h) {
+        SyntaxParser.fps=fps;
+        SyntaxParser.w=w;
+        SyntaxParser.h=h;
+    }
 }

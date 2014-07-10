@@ -18,16 +18,16 @@ public class SceneBlockParser {
 
     public static Scene parseSceneBlock(ArrayList<String> code) throws Exception {
         Scene s = new Scene(getFPS(), getW(), getH());
-        if (getNeedTranslating()) {
+        ArrayList<String> codeClone=new ArrayList<>();
+        codeClone.addAll(code);
             if (code.get(0).startsWith("\\duration")) {
                 s.setDuration(parseFloat(getArguments(code.get(0))[0]));
-                code.remove(0);
+                codeClone.remove(0);
             } else
                 exit("Command before setting duration: [" + code.get(0) + "] ");
 
-            s.addCommand(new DrawLayer(parseLayerBlock(code)));
-        }
-        else s.setSource(code);
+            s.addCommand(new DrawLayer(parseLayerBlock(codeClone)));
+        s.setSource(code);
         return s;
     }
 

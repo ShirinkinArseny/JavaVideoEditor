@@ -10,19 +10,14 @@ import static JVE.Parsers.ParseUtils.printMessage;
 
 public class Server {
 
-    private ArrayList<ServerConnection> clients;
-    private ConnectionEvent event;
+    private ArrayList<Connection> clients;
 
-    public void sendGlobalMessage(String s) {
-       for (ServerConnection c: clients)
+    public void sendGlobalMessage(String s) throws IOException {
+       for (Connection c: clients)
            c.sendMessage(s);
     }
 
-    public void setOnInputEvent(ConnectionEvent r) {
-        event=r;
-    }
-
-    public Server(int port){
+    public Server(int port, OnConnectionEvent c, OnInputCommandEvent m, OnInputFileEvent r, String defInputFOlder){
         new Thread(() -> {
             clients=new ArrayList<>();
             ServerSocket server;
@@ -30,32 +25,23 @@ public class Server {
                 server = new ServerSocket(port);
                 while (true) {
                     Socket client = server.accept();
-                    ServerConnection cl = new ServerConnection(client, new ConnectionEvent() {
-                        @Override
-                        public void run(Connection c, String message) throws Exception {
-                            event.run(c, message);
-                            printMessage("[Server] Incoming message: " + message);
-                        }
-                    });
+                    Connection cl=new Connection(client);
+                    cl.setOnMessageEvent(m);
+                    cl.setOnFileEvent(r);
                     cl.setOnCloseEvent(() -> {
                         printMessage("[Server] Disconnected client: " + client.getInetAddress().toString());
                         clients.remove(cl);
                     });
+                    c.run(cl);
+                    cl.startWorking(defInputFOlder);
                     clients.add(cl);
-                    event.run(cl, "CONNECTED");
                     printMessage("[Server] Got client: " + client.getInetAddress());
-
-
-
                 }     }
             catch (Exception e) {
-                System.err.println(e.getMessage());
+                System.err.println(e.toString());
+                e.printStackTrace();
             }
         }).start();
-    }
-
-    public static void main(String[] args) throws IOException {
-        new Server(1234);
     }
 
 }

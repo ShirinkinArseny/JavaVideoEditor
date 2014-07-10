@@ -1,5 +1,6 @@
 package JVE.Rendering;
 
+import JVE.Commands.Command;
 import JVE.Main;
 
 import javax.imageio.ImageIO;
@@ -23,7 +24,7 @@ public class Scene extends SceneLayer {
     public void setSource(ArrayList<String> src) {
         source="";
         for (String c: src)
-            source+=c+";;;";
+            source+=c+"\n";
         source=source.substring(0, source.length()-1);
     }
 

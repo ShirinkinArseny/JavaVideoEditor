@@ -1,5 +1,6 @@
 package JVE;
 
+import JVE.Parsers.ParseUtils;
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
@@ -77,6 +78,34 @@ public class ZipIO {
         return output;
     }
 
+    public static void zipString(ArrayList<String> files, String outputArchive) throws Exception {
+        ZipOutputStream zipOutputStream = null;
+        try {
+            zipOutputStream = new ZipOutputStream(new FileOutputStream(outputArchive));
+            for (String fileURL : files) {
+                File file= ParseUtils.getFile(fileURL);
+                ZipEntry zipEntry = new ZipEntry(file.getName());
+                zipOutputStream.putNextEntry(zipEntry);
+                FileInputStream fileInputStream = new FileInputStream(file);
+                for (int c = fileInputStream.read(); c!=-1; c = fileInputStream.read())
+                    zipOutputStream.write(c);
+                zipOutputStream.closeEntry();
+
+                //System.out.println("File " + file.getName() + " was packaged!");
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (zipOutputStream!=null)
+                    zipOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public static void zip(ArrayList<File> files, String outputArchive) {
         ZipOutputStream zipOutputStream = null;
