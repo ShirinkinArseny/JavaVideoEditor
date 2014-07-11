@@ -80,9 +80,8 @@ public class RenderServer {
             System.out.println("Framerender: ready " + framesCount + "/" + summary + " frames, " + scenesDone + "/" + scenes.size() + " scenes");
         }
 
-        Render.render_ffmpeg(fps, w, h, Main.tempDir + "out.mp4");
+        Render.renderFromFrames_ffmpeg(Main.tempDir + "out.mp4");
     }
-
 
     public static void renderServerScenes(ArrayList<Scene> scenes, int fps, int w, int h) throws Exception {
         printMessage("Starting server work...");
@@ -90,9 +89,9 @@ public class RenderServer {
         cleanTempDir();
         cleanTempDirForIncludes();
 
-        ArrayList<Scene> scenesClone=new ArrayList<>();
-        for (Scene s: scenes)
-            scenesClone.add(s);
+        final int[] number = {0};
+        final int[] dutiesCount = {0};
+        final int srcSize=scenes.size();
 
         Server server=new Server(port, c -> {
 
@@ -105,15 +104,17 @@ public class RenderServer {
                 printMessage("Macroses sent");
             }
             c.sendMessage("PREPARE " + fps + " " + w + " " + h);
+        }, c -> {
+            printMessage("Client "+c.toString()+" disconnected, returning his task: "+c.getDuty());
+            scenes.add(scenes.get(Integer.valueOf(c.getDuty())));
         }, (c, message) -> {
 
             printMessage("Incoming message: " + message);
 
             if (message.startsWith("DONE")) {
-                if (!scenesClone.isEmpty()) {
+                if (number[0] < scenes.size()) {
                     printMessage("Starting send scene");
-                    Scene copy = scenesClone.get(0);
-                    scenesClone.remove(0);
+                    Scene copy = scenes.get(number[0]);
 
                     printMessage("Searching used files");
                     ArrayList<String> files = copy.getUsedFilesList();
@@ -125,20 +126,30 @@ public class RenderServer {
                         printMessage("Stuff sent");
                     }
 
+                    c.setDuty(String.valueOf(number[0]));
+                    dutiesCount[0]++;
                     c.sendMessage("SCENE " + copy.getSource());
+                    number[0]++;
                     printMessage("Scene sent: " + copy.getSource());
                     //todo: intelligent system
-                    printMessage("Also: " + scenesClone.size() + " scenes");
-                }
-                else
-                {
-                    //render
-                    printMessage("All scenes are rendered");
+                    printMessage("Also: " + (scenes.size() - number[0]) + " scenes");
+                } else {
+                    if (dutiesCount[0] == 0) {
+                        Render.renderFromVideos_ffmpeg(srcSize, "Out.mp4");
+                        printMessage("All scenes are rendered");
+                    }
+
+
                 }
             }
         }, (c, f) -> {
+            f.renameTo(new File(Main.tempDir + c.getDuty()+".mp4"));
+            printMessage("MP4 named: " + c.getDuty()+".mp4");
+            c.setDuty(null);
+            dutiesCount[0]--;
+
             printMessage("MP4 catched");
-        }, Main.tempDirForIncludes);
+        }, Main.tempDir);
     }
 
     public static void renderClientScenes() throws Exception {
@@ -161,8 +172,8 @@ public class RenderServer {
                     printMessage("Scene parsed");
                     s.render(0);
                     printMessage("Scene has been rendered");
-                    Render.render_ffmpeg(SyntaxParser.getFPS(), SyntaxParser.getW(), SyntaxParser.getH(), "Scene000.mp4");
-                    c.sendFile(new File(Main.tempDir + "Scene000.mp4"));
+                    Render.renderFromFrames_ffmpeg("Scene.mp4");
+                    c.sendFile(new File(Main.tempDir + "Scene.mp4"));
                     printMessage("MP4 sent");
                     c.sendMessage("DONE");
                     printMessage("Next task requested");

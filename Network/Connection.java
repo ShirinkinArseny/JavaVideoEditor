@@ -1,7 +1,4 @@
 package JVE.Network;
-
-import JVE.Parsers.ParseUtils;
-
 import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -13,7 +10,18 @@ public class Connection {
     private Runnable close;
     private OutputStream out;
     private InputStream in;
-    AtomicBoolean isWorking = new AtomicBoolean(true);
+    private AtomicBoolean isWorking = new AtomicBoolean(true);
+    private String adress;
+
+    public String getDuty() {
+        return duty;
+    }
+
+    public void setDuty(String duty) {
+        this.duty = duty;
+    }
+
+    private String duty;
 
     public void setOnCloseEvent(Runnable r) {
         close = r;
@@ -49,6 +57,7 @@ public class Connection {
     public Connection(Socket s) throws IOException {
         in=s.getInputStream();
         out=s.getOutputStream();
+        adress=s.getInetAddress().toString();
     }
 
     private static String readLine(InputStream is) throws IOException {
@@ -86,6 +95,9 @@ public class Connection {
 
 
                         File f = new File(defaultInputFolder + name);
+                        while (f.exists()) {
+                            f = new File(defaultInputFolder+f.getName()+"_");
+                        }
                         f.createNewFile();
                         byte[] buffer = new byte[1024];
                         FileOutputStream os = new FileOutputStream(f);
@@ -95,7 +107,6 @@ public class Connection {
                             int count = in.read(buffer, 0, (int) Math.min(1024, length-total));
                             total += count;
                             os.write(buffer, 0, count);
-                            ParseUtils.printMessage("file: "+total+":"+length+":"+count);
                         }
                         os.flush();
                         os.close();
@@ -117,5 +128,9 @@ public class Connection {
             isWorking.set(false);
             if (close != null) close.run();
         }).start();
+    }
+
+    public String toString() {
+        return adress;
     }
 }

@@ -1,6 +1,5 @@
 package JVE.Rendering;
 
-import JVE.Commands.Command;
 import JVE.Main;
 
 import javax.imageio.ImageIO;

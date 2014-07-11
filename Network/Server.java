@@ -17,7 +17,11 @@ public class Server {
            c.sendMessage(s);
     }
 
-    public Server(int port, OnConnectionEvent c, OnInputCommandEvent m, OnInputFileEvent r, String defInputFOlder){
+    public ArrayList<Connection> getClients() {
+        return clients;
+    }
+
+    public Server(int port, OnConnectionEvent c, OnConnectionEvent d, OnInputCommandEvent m, OnInputFileEvent r, String defInputFOlder){
         new Thread(() -> {
             clients=new ArrayList<>();
             ServerSocket server;
@@ -30,14 +34,19 @@ public class Server {
                     cl.setOnFileEvent(r);
                     cl.setOnCloseEvent(() -> {
                         printMessage("[Server] Disconnected client: " + client.getInetAddress().toString());
+                        try {
+                            d.run(cl);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         clients.remove(cl);
                     });
                     c.run(cl);
                     cl.startWorking(defInputFOlder);
                     clients.add(cl);
                     printMessage("[Server] Got client: " + client.getInetAddress());
-                }     }
-            catch (Exception e) {
+                }
+            } catch (Exception e) {
                 System.err.println(e.toString());
                 e.printStackTrace();
             }
