@@ -101,7 +101,7 @@ public class RenderServer {
             }
             for (Macros m : Macros.getMacroses()) {
                 c.sendMessage("MACROS " + m.getCode());
-                printMessage("Macroses sent");
+                printMessage("Macroses sent: "+m.getCode());
             }
             c.sendMessage("PREPARE " + fps + " " + w + " " + h);
         }, c -> {
@@ -178,9 +178,11 @@ public class RenderServer {
                     c.sendMessage("DONE");
                     printMessage("Next task requested");
                 } else if (message.startsWith("MACROS")) {
-                    String[] commands = message.substring(6).split("\n");
+                    String[] commands = message.substring(7).split("\n");
                     ArrayList<String> macro = new ArrayList<>();
                     Collections.addAll(macro, commands);
+
+                    printMessage("Macroses got: "+commands);
                     try {
                         Macros.parseMacros(macro);
                         printMessage("Macro parsed");

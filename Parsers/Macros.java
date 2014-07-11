@@ -3,6 +3,7 @@ package JVE.Parsers;
 import JVE.Rendering.SceneLayer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static JVE.Parsers.LayerBlockParser.parseLayerBlock;
 import static JVE.Parsers.ParseUtils.exit;
@@ -20,13 +21,10 @@ public class Macros {
         return source;
     }
 
-    public Macros(String name, String[] params, ArrayList<String> code) {
+    public Macros(String name, String[] params, ArrayList<String> code, ArrayList<String> src) {
         this.name=name;
         this.params=params;
         this.code=code;
-    }
-
-    public Macros(ArrayList<String> src) {
         source="";
         for (String s: src)
             source+=s+"\n";
@@ -63,9 +61,12 @@ public class Macros {
         return macroses;
     }
 
-    public static void parseMacros(ArrayList<String> code) throws Exception {
+    public static void parseMacros(ArrayList<String> code2) throws Exception {
+        ParseUtils.printMessage(Arrays.toString(code2.toArray()));
 
-        if (getNeedTranslating()) {
+        ArrayList<String> code=new ArrayList<>();
+        for (String s: code2)
+        code.add(s);
             String name = null;
             if (code.get(0).startsWith("\\name")) {
                 name = getArguments(code.get(0))[0];
@@ -78,9 +79,7 @@ public class Macros {
                 code.remove(0);
             } else
                 exit("Command before setting arguments: [" + code.get(0) + "] ");
-            macroses.add(new Macros(name, params, code));
-        }
-        else macroses.add(new Macros(code));
+            macroses.add(new Macros(name, params, code, code2));
 
     }
 

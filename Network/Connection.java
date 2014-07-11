@@ -1,4 +1,5 @@
 package JVE.Network;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -36,75 +37,78 @@ public class Connection {
     }
 
     public void sendMessage(String s) throws IOException {
-        out.write(("@command " + s.length() + '\n' + s + '\n').getBytes());
+        out.write(("@command " + s.length() + '\n' + s + '\n').getBytes("UTF-8"));
         out.flush();
     }
 
     public void sendFile(File f) throws IOException {
         FileInputStream fis = new FileInputStream(f.getPath());
-        long length=f.length();
-        out.write(("@file " + length + ' ' + f.getName() + '\n').getBytes());
+        long length = f.length();
+        out.write(("@file " + length + ' ' + f.getName() + '\n').getBytes("UTF-8"));
         out.flush();
         byte[] byteArray = new byte[1024];
         while (length > 0) {
             int i = fis.read(byteArray);
             out.write(byteArray, 0, i);
-            length-= i;
+            length -= i;
         }
         out.flush();
     }
 
     public Connection(Socket s) throws IOException {
-        in=s.getInputStream();
-        out=s.getOutputStream();
-        adress=s.getInetAddress().toString();
+        in = s.getInputStream();
+        out = s.getOutputStream();
+        adress = s.getInetAddress().toString();
     }
 
     private static String readLine(InputStream is) throws IOException {
-        String res="";
-        char c;
+        byte[] b = new byte[100];
+        byte c;
+        int length = 0;
         do {
-            c= (char) is.read();
-            if (c!='\n') res+=c;
+            c = (byte) is.read();
+            if (c != '\n') {
+                b[length] = c;
+                length++;
+                if (b.length <= length)
+                    b = java.util.Arrays.copyOf(b, length + 100);
+            }
         }
-        while (c!='\n');
-        return res;
+        while (c != '\n');
+        return new String(java.util.Arrays.copyOf(b, length), "UTF-8");
     }
 
     public void startWorking(String defaultInputFolder) throws Exception {
         new Thread(() -> {
             try {
-                String input= readLine(in);
+                String input = readLine(in);
                 while (input != null) {
 
 
-                    String [] params=input.split(" ");
+                    String[] params = input.split(" ");
                     if (params[0].startsWith("@command")) {
                         long length = Long.parseLong(params[1]);
-                        String command="";
-                        do {
-                            command += readLine(in)+'\n';
-                            length-=command.length();
+                        String command = "";
+                        while (length > command.length()) {
+                            command += readLine(in) + '\n';
                         }
-                        while (length>0);
-                         commandEvent.run(this, command);
-                    }
-                    else if (params[0].startsWith("@file")) {
-                        String name=params[2];
+                        commandEvent.run(this, command);
+                    } else if (params[0].startsWith("@file")) {
+                        String name = params[2];
                         long length = Long.parseLong(params[1]);
 
 
                         File f = new File(defaultInputFolder + name);
                         while (f.exists()) {
-                            f = new File(defaultInputFolder+f.getName()+"_");
+                            f = new File(defaultInputFolder + f.getName() + "_");
                         }
                         f.createNewFile();
                         byte[] buffer = new byte[1024];
                         FileOutputStream os = new FileOutputStream(f);
 
-                        int total=0;
-                        while (total<length) {
-                            int count = in.read(buffer, 0, (int) Math.min(1024, length-total));
+                        int total = 0;
+                        while (total < length) {
+                            int count = in.read(buffer, 0, (int) Math.min(1024, length - total));
                             total += count;
                             os.write(buffer, 0, count);
                         }
@@ -113,7 +117,7 @@ public class Connection {
 
                         fileEvent.run(this, f);
                     }
-                    input= readLine(in);
+                    input = readLine(in);
                 }
             } catch (Exception e) {
                 System.err.println("[Connection] Error pt1 : " + e);

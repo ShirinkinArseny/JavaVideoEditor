@@ -3,6 +3,7 @@ package JVE.Rendering;
 import JVE.Main;
 import JVE.Parsers.SyntaxParser;
 
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class Render {
@@ -33,10 +34,13 @@ public class Render {
         try {
             String names="";
             for (int i=0; i<count; i++) {
-                names+=" -i "+i+".mp4 ";
+                names+="file '"+i+".mp4'\n";
             }
-            String command="cd "+ Main.tempDir+" && " +
-                    "ffmpeg "+names+" -c:v libx264 -crf 0 -strict -2 -y "+filename;
+            FileWriter fw = new FileWriter(Main.tempDir+"inputs.txt");
+                fw.write(names);
+            fw.close();
+            String command="cd "+ Main.tempDir+" && "+
+                    "ffmpeg -f concat -i inputs.txt -c copy "+filename;
             System.out.println("Running: "+command);
             ShellUsing.runCommand(command);
         } catch (Exception ex) {
