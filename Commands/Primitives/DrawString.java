@@ -10,16 +10,19 @@ import java.util.Arrays;
 public class DrawString extends Command {
 
     private String[] params;
-    private static String[] paramsLast = new String[]{"0", "0", "DejaVu Sans", "24", "0", "0", "0", "255"};
+    private static String[] paramsLast = new String[]{"Sample text", "0", "0", "DejaVu Sans", "24", "0", "0", "0", "255"};
     private Font f;
 
     public DrawString(String[] s) {
-        params = paramsLast;
+        params = new String[paramsLast.length];
+        System.arraycopy(paramsLast, 0, params, 0, paramsLast.length);
 
-        for (int i = 0; i < s.length; i++)
+        for (int i = 0; i < s.length; i++)  {
             if (i != 0 && i != 3)
                 params[i] = MathParser.prepareExpression(s[i]);
-            else params[i] = s[i];
+                else params[i] = s[i];
+            paramsLast[i]=params[i];
+            }
 
         if (params.length > 3) {
             try {

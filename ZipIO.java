@@ -36,7 +36,11 @@ public class ZipIO {
             String name = zipEntry.getName();
             Path path = Paths.get(base + name);
             Files.createDirectories(path.getParent());
-            Files.createFile(path);
+            try {
+            Files.createFile(path); }
+            catch (FileAlreadyExistsException e) {
+                ParseUtils.printMessage("File "+path+ " is already exists, ignoring...");
+            }
             File file = new File(base + name);
             FileOutputStream fout = new FileOutputStream(file);
             for (int c = zipInputStream.read(); c != -1; c = zipInputStream.read()) {

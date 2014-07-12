@@ -12,9 +12,12 @@ public class DrawEllipse extends Command {
     private static String[] paramsLast = new String[]{"0", "0", "200", "200", "0", "0", "0", "255"};
 
     public DrawEllipse(String[] s) {
-        params = paramsLast;
-        for (int i = 0; i < s.length; i++)
+        params = new String[paramsLast.length];
+        System.arraycopy(paramsLast, 0, params, 0, paramsLast.length);
+        for (int i = 0; i < s.length; i++) {
             params[i] = MathParser.prepareExpression(s[i]);
+            paramsLast[i]=params[i];
+        }
     }
 
     @Override
