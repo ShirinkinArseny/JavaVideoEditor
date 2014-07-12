@@ -11,8 +11,8 @@ public class ApplyAdd extends Command {
     String color;
 
     public ApplyAdd(String[] s) {
-        color= MathParser.prepareExpression(s[0]);
-        args=new String[s.length-1];
+        color = MathParser.prepareExpression(s[0]);
+        args = new String[s.length - 1];
         System.arraycopy(s, 1, args, 0, s.length - 1);
     }
 

@@ -22,6 +22,6 @@ public class ApplyContur extends Command {
 
     @Override
     public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
-          return identity.filter(canva, null);
+        return identity.filter(canva, null);
     }
 }

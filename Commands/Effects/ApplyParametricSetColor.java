@@ -14,8 +14,8 @@ public class ApplyParametricSetColor extends Command {
     String color;
 
     public ApplyParametricSetColor(String[] s) {
-        color= MathParser.prepareExpression(s[0]);
-        args=new String[s.length-1];
+        color = MathParser.prepareExpression(s[0]);
+        args = new String[s.length - 1];
         System.arraycopy(s, 1, args, 0, s.length - 1);
     }
 
@@ -26,7 +26,7 @@ public class ApplyParametricSetColor extends Command {
         short[] straight = new short[256];
         for (int i = 0; i < 256; i++) {
             straight[i] = (short) i;
-            String temp=color.replaceAll("param", String.valueOf(i));
+            String temp = color.replaceAll("param", String.valueOf(i));
             modified[i] = (short) parseTimedInt(temp, normalisedTime, absoluteTime);
         }
 

@@ -15,23 +15,23 @@ public class DrawImage extends Command {
     private String[] params;
 
     public ArrayList<String> getUsedFilesList() {
-        ArrayList<String> urls=new ArrayList<>();
+        ArrayList<String> urls = new ArrayList<>();
         urls.add(params[0]);
         return urls;
     }
 
     public DrawImage(String[] s) throws Exception {
 
-        params=new String[s.length];
-        for (int i=0; i<s.length; i++)
-            if (i!=0)
-            params[i]= MathParser.prepareExpression(s[i]);
-        else
-                params[i]= s[i];
+        params = new String[s.length];
+        for (int i = 0; i < s.length; i++)
+            if (i != 0)
+                params[i] = MathParser.prepareExpression(s[i]);
+            else
+                params[i] = s[i];
         try {
-            image= ImageIO.read(getFile(s[0]));
+            image = ImageIO.read(getFile(s[0]));
         } catch (Exception e) {
-            System.err.println("Failed to load image: "+s[0]);
+            System.err.println("Failed to load image: " + s[0]);
             throw e;
         }
     }
@@ -45,7 +45,7 @@ public class DrawImage extends Command {
                 parseTimedInt(params[3], normalisedTime, absoluteTime),
                 parseTimedInt(params[4], normalisedTime, absoluteTime),
                 null, null
-                );
+        );
         return canva;
     }
 }

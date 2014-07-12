@@ -1,4 +1,4 @@
-package JVE.Commands.Simplificators;
+package JVE.Commands;
 
 import JVE.Commands.Command;
 import JVE.Parsers.MathParser;
@@ -10,7 +10,7 @@ public class InjectJS extends Command {
     private String code;
 
     public InjectJS(String[] s) {
-        code=MathParser.prepareExpression(s[0]);
+        code = MathParser.prepareExpression(s[0]);
     }
 
     @Override

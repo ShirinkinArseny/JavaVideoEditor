@@ -2,9 +2,7 @@ package JVE.Parsers;
 
 import JVE.Commands.Effects.*;
 import JVE.Commands.Primitives.*;
-import JVE.Commands.Simplificators.InjectJS;
-import JVE.Commands.Simplificators.SetDefaultColor;
-import JVE.Commands.Simplificators.SetDefaultFont;
+import JVE.Commands.InjectJS;
 import JVE.Rendering.SceneLayer;
 
 import java.util.ArrayList;
@@ -51,20 +49,14 @@ public class LayerBlockParser {
                 case "\\drawString":
                     s.addCommand(new DrawString(getArguments(code.get(i))));
                     break;
-                case "\\drawNoise":
-                    s.addCommand(new DrawNoise(getArguments(code.get(i))));
+                case "\\drawEllipse":
+                    s.addCommand(new DrawEllipse(getArguments(code.get(i))));
                     break;
                 case "\\drawImage":
                     s.addCommand(new DrawImage(getArguments(code.get(i))));
                     break;
                 case "\\fillImage":
                     s.addCommand(new FillImage(getArguments(code.get(i))));
-                    break;
-                case "\\setCurrentColor":
-                    s.addCommand(new SetDefaultColor(getArguments(code.get(i))));
-                    break;
-                case "\\setCurrentFont":
-                    s.addCommand(new SetDefaultFont(getArguments(code.get(i))));
                     break;
                 case "\\blur":
                     s.addCommand(new ApplyBlur(getArguments(code.get(i))));
@@ -92,6 +84,21 @@ public class LayerBlockParser {
                     break;
                 case "\\move":
                     s.addCommand(new ApplyMove(getArguments(code.get(i))));
+                    break;
+                case "\\rotate":
+                    s.addCommand(new ApplyRotate(getArguments(code.get(i))));
+                    break;
+                case "\\shear":
+                    s.addCommand(new ApplyShear(getArguments(code.get(i))));
+                    break;
+                case "\\clear":
+                    s.addCommand(new ApplyClear(getArguments(code.get(i))));
+                    break;
+                case "\\clip":
+                    s.addCommand(new ApplyClip(getArguments(code.get(i))));
+                    break;
+                case "\\copy":
+                    s.addCommand(new ApplyCopy(getArguments(code.get(i))));
                     break;
                 default:
                     exit("Unknowable command in layer block: [" + code.get(i) + "] Maybe it is placed wrong");

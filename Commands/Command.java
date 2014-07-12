@@ -17,7 +17,7 @@ public abstract class Command {
         return new ArrayList<>();
     }
 
-    public String [][] divideChanels(String[] straight, String[] effected, String[] args) {
+    public String[][] divideChanels(String[] straight, String[] effected, String[] args) {
         String[][] chanelMap = new String[][]{straight, straight, straight, straight};
         for (String color : args) {
             switch (color.toLowerCase()) {
@@ -45,9 +45,9 @@ public abstract class Command {
         return chanelMap;
     }
 
-    public short [][] divideChanels(short[] straight, short[] effected, String[] args) {
-        if (args.length==0)
-            args=new String[]{""};
+    public short[][] divideChanels(short[] straight, short[] effected, String[] args) {
+        if (args.length == 0)
+            args = new String[]{""};
         short[][] chanelMap = new short[][]{straight, straight, straight, straight};
         for (String color : args) {
             switch (color.toLowerCase()) {
@@ -76,11 +76,11 @@ public abstract class Command {
     }
 
     public static void setDefaultColor(int r, int g, int b, int a) {
-        c=new Color(r, g, b, a);
+        c = new Color(r, g, b, a);
     }
 
     public static void setDefaultFont(Font f) {
-        Command.f=f;
+        Command.f = f;
     }
 
     public static Font getDefaultFont() {
@@ -92,7 +92,7 @@ public abstract class Command {
     }
 
     public String setTimes(String s, float nTime, float aTime) {
-         return s.replaceAll("normalTime", String.valueOf(nTime)).replaceAll("absoluteTime", String.valueOf(aTime));
+        return s.replaceAll("normalTime", String.valueOf(nTime)).replaceAll("absoluteTime", String.valueOf(aTime));
     }
 
     public int parseTimedInt(String s, float nTime, float aTime) throws Exception {

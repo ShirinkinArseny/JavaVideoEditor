@@ -7,6 +7,7 @@ import JVE.Rendering.Scene;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static JVE.Parsers.MathParser.getInjections;
@@ -61,7 +62,7 @@ public class RenderServer {
         }
     }
 
-    public static void renderLocalScenes(ArrayList<Scene> scenes, int fps, int w, int h) throws Exception {
+    public static void renderLocalScenes(ArrayList<Scene> scenes) throws Exception {
         cleanTempDir();
         runInjections();
 
@@ -83,7 +84,7 @@ public class RenderServer {
         Render.renderFromFrames_ffmpeg(Main.tempDir + "out.mp4");
     }
 
-    public static void renderServerScenes(ArrayList<Scene> scenes, int fps, int w, int h) throws Exception {
+    public static void renderServerScenes(ArrayList<Scene> scenes) throws Exception {
         printMessage("Starting server work...");
 
         cleanTempDir();
@@ -93,7 +94,7 @@ public class RenderServer {
         final int[] dutiesCount = {0};
         final int srcSize=scenes.size();
 
-        Server server=new Server(port, c -> {
+        new Server(port, c -> {
 
             if (!getInjections().equals("")) {
                 c.sendMessage("INJECTION " + MathParser.getInjections());
@@ -103,7 +104,8 @@ public class RenderServer {
                 c.sendMessage("MACROS " + m.getCode());
                 printMessage("Macroses sent: "+m.getCode());
             }
-            c.sendMessage("PREPARE " + fps + " " + w + " " + h);
+            c.sendMessage("PREPARE " + SyntaxParser.getFPS() +
+                    " " + SyntaxParser.getW() + " " + SyntaxParser.getH());
         }, c -> {
             printMessage("Client "+c.toString()+" disconnected, returning his task: "+c.getDuty());
             scenes.add(scenes.get(Integer.valueOf(c.getDuty())));
@@ -120,7 +122,7 @@ public class RenderServer {
                     ArrayList<String> files = copy.getUsedFilesList();
                     printMessage("Files count: " + files.size());
                     if (!files.isEmpty()) {
-                        zipString(files, Main.tempDirForIncludes + "archive.zip");
+                        zip(files, Main.tempDirForIncludes + "archive.zip");
                         printMessage("Stuff zipped");
                         c.sendFile(new File(Main.tempDirForIncludes + "archive.zip"));
                         printMessage("Stuff sent");
@@ -156,7 +158,7 @@ public class RenderServer {
         printMessage("Starting client work...");
         cleanTempDirForIncludes();
         ParseUtils.addPath(Main.tempDirForIncludes);
-        Client client =new Client(ip, port, (c, message) -> {
+        new Client(ip, port, (c, message) -> {
 
                 printMessage("Incoming message: " + message);
 
@@ -182,7 +184,7 @@ public class RenderServer {
                     ArrayList<String> macro = new ArrayList<>();
                     Collections.addAll(macro, commands);
 
-                    printMessage("Macroses got: "+commands);
+                    printMessage("Macroses got: "+ Arrays.toString(commands));
                     try {
                         Macros.parseMacros(macro);
                         printMessage("Macro parsed");
@@ -211,12 +213,12 @@ public class RenderServer {
         }, Main.tempDirForIncludes);
     }
 
-    public static void renderScenes(ArrayList<Scene> scenes, int fps, int w, int h) throws Exception {
+    public static void renderScenes(ArrayList<Scene> scenes) throws Exception {
         switch (render) {
 
-            case Local: renderLocalScenes(scenes, fps, w, h);
+            case Local: renderLocalScenes(scenes);
                 break;
-            case Server: renderServerScenes(scenes, fps, w, h);
+            case Server: renderServerScenes(scenes);
                 break;
             case Client: renderClientScenes();
                 break;

@@ -14,8 +14,8 @@ public class ApplySetColor extends Command {
     String color;
 
     public ApplySetColor(String[] s) {
-        color= MathParser.prepareExpression(s[0]);
-        args=new String[s.length-1];
+        color = MathParser.prepareExpression(s[0]);
+        args = new String[s.length - 1];
         System.arraycopy(s, 1, args, 0, s.length - 1);
     }
 
@@ -24,7 +24,7 @@ public class ApplySetColor extends Command {
 
         short[] modified = new short[256];
         short[] straight = new short[256];
-        short value=(short) (Math.min(255, parseTimedFloat(color, normalisedTime, absoluteTime)));
+        short value = (short) (Math.min(255, parseTimedFloat(color, normalisedTime, absoluteTime)));
         for (int i = 0; i < 256; i++) {
             modified[i] = value;
             straight[i] = (short) i;

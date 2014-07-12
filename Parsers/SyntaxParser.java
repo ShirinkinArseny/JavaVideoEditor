@@ -90,7 +90,7 @@ public class SyntaxParser {
                         s.remove(s.size() - 1);
                         parseVideoBlock(s);
                         System.out.println("All scenes are parsed");
-                        renderScenes(scenes, fps, w, h);
+                        renderScenes(scenes);
                         return;
                     }
                 }
