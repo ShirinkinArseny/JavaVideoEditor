@@ -1,9 +1,12 @@
 package JVE.Parsers;
 
+import JVE.Rendering.RenderEvent;
 import JVE.Rendering.Scene;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import static JVE.Parsers.Macros.parseMacros;
 import static JVE.Parsers.MathParser.addInjection;
 import static JVE.Parsers.ParseUtils.exit;
 import static JVE.Parsers.ParseUtils.getArguments;
@@ -11,9 +14,9 @@ import static JVE.Parsers.ParseUtils.printMessage;
 import static JVE.Parsers.Preprocess.preprocess;
 import static JVE.Parsers.SceneBlockParser.parseSceneBlock;
 import static JVE.Parsers.VideoBlockParser.parseVideoBlock;
-import static JVE.RenderServer.*;
+import static JVE.Rendering.RenderModes.*;
 
-public class SyntaxParser {
+public class Video {
 
     public static int getW() {
         return w;
@@ -30,9 +33,11 @@ public class SyntaxParser {
     private static int w = 800;
     private static int h = 600;
     private static int fps = 30;
+    private static int frames=0;
     private static ArrayList<Scene> scenes = new ArrayList<>();
 
-    public static void parse(String url) throws Exception {
+    public Video(String url, RenderEvent r) throws Exception {
+        MathParser.init();
 
         ArrayList<String> code = preprocess(url);
 
@@ -88,9 +93,10 @@ public class SyntaxParser {
                     s.add(code.get(j));
                     if (code.get(j).startsWith("\\end{video}")) {
                         s.remove(s.size() - 1);
-                        parseVideoBlock(s);
+                        parseVideoBlock(s, r);
+                        for (Scene scene: scenes)
+                            frames+=scene.getFrames();
                         System.out.println("All scenes are parsed");
-                        renderScenes(scenes);
                         return;
                     }
                 }
@@ -98,9 +104,56 @@ public class SyntaxParser {
                 continue;
             }
 
+            if (code.get(i).startsWith("\\begin{macros}")) {
+
+                ArrayList<String> s = new ArrayList<>();
+                boolean found = false;
+                for (int j = i + 1; j < code.size(); j++) {
+                    s.add(code.get(j));
+                    if (code.get(j).startsWith("\\end{macros}")) {
+                        s.remove(s.size() - 1);
+                        parseMacros(s);
+                        i = j;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) exit("Macros block is not closed");
+                continue;
+            }
+
             exit("Unknowable command in main block: [" + code.get(i) + "] Maybe it is placed wrong");
         }
+    }
 
+    public void render(RenderEvent change) throws Exception {
+        renderScenes(scenes, change);
+    }
+
+    public BufferedImage render(float frameNumber) throws Exception {
+        int num= (int) (frames*frameNumber);
+        for (Scene scene : scenes) {
+            if (num < scene.getFrames()) {
+                return scene.render(num);
+            } else num -= scene.getFrames();
+        }
+        return null;
+    }
+
+    public BufferedImage render(float frameNumber, int scenename) throws Exception {
+        return scenes.get(scenename).render((int) (frameNumber*scenes.get(scenename).getFrames()));
+    }
+
+    public static String[] getSceneNames() {
+        String[] names=new String[scenes.size()];
+        for (int i=0; i<scenes.size(); i++) {
+            names[i]=scenes.get(i).getName();
+        }
+        return names;
+    }
+
+    public static int getScenesCount() {
+        return scenes.size();
     }
 
     static void addScene(ArrayList<String> code) throws Exception{
@@ -108,8 +161,8 @@ public class SyntaxParser {
     }
 
     public static void setBases(int fps, int w, int h) {
-        SyntaxParser.fps=fps;
-        SyntaxParser.w=w;
-        SyntaxParser.h=h;
+        Video.fps=fps;
+        Video.w=w;
+        Video.h=h;
     }
 }

@@ -18,8 +18,17 @@ public class ApplyAdd extends Command {
 
     @Override
     public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
+        short[] modified = new short[256];
+        short[] straight = new short[256];
+        for (int i = 0; i < 256; i++) {
+            straight[i] = (short) i;
+            modified[i] = (short) Math.min(255, (i+parseTimedFloat(color, normalisedTime, absoluteTime)));
+        }
 
-        BufferedImageOp multiplyOp = new RescaleOp(1, parseTimedFloat(color, normalisedTime, absoluteTime), null);
+        BufferedImageOp multiplyOp;
+        short[][] invertMap = divideChanels(straight, modified, args);
+        multiplyOp = new LookupOp(new ShortLookupTable(0, invertMap), null);
+
         return multiplyOp.filter(canva, canva);
     }
 }

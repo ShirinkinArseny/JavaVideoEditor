@@ -1,7 +1,7 @@
 package JVE.Rendering;
 
 import JVE.Main;
-import JVE.Parsers.SyntaxParser;
+import JVE.Parsers.Video;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class Render {
             //        "ffmpeg "+audio+" -i frame%04d.png -r "+fps+" -c:v libx264 -crf 0 -strict -2 "+filename;
             String command="cd "+ Main.tempDir+" && " +
                     "ffmpeg "+//-i /home/nameless/hs2.ogg" +
-                    " -r "+ SyntaxParser.getFPS()+" -i frame%04d.png -c:v libx264 -crf 0 -strict -2 -y "+filename;
+                    " -r "+ Video.getFPS()+" -i frame%04d.png -c:v libx264 -crf 0 -strict -2 -y "+filename;
             System.out.println("Running: "+command);
             ShellUsing.runCommand(command);
         } catch (Exception ex) {

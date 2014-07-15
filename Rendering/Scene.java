@@ -13,8 +13,16 @@ public class Scene extends SceneLayer {
     private float duration;
     private int frames;
     private int width, height;
-    private String audioURL=null;
     private String source;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name=name;
+    }
 
     public String getSource() {
         return source;
@@ -27,39 +35,24 @@ public class Scene extends SceneLayer {
         source=source.substring(0, source.length()-1);
     }
 
-    private static String getName(int i) {
+    private static String getFileName(int i) {
         String num= String.valueOf(i);
         while (num.length()<4)
             num='0'+num;
         return "frame"+num+".png";
     }
 
-    private static String timeToString(int time) {
-        String s= String.valueOf(time);
-        while (s.length()<2)
-            s='0'+s;
-        return s;
-    }
-
-    private static String timeToString(float time) {
-        int sec=(int) time;
-        int ms=(int)(100*(time-sec));
-        int min=sec/60;
-        sec%=60;
-        int hours=min/60;
-        min%=60;
-        return timeToString(hours)+":"+timeToString(min)+":"+timeToString(sec)+"."+timeToString(ms);
-    }
-
-    public void render(int startFrame) throws Exception {
-
+    public void renderAndSave(int startFrame) throws Exception {
         for (int i=0; i<frames; i++) {
-            BufferedImage f=new BufferedImage(width, height, java.awt.image.BufferedImage.TYPE_INT_ARGB);
-            float timeNormalised=i*1.0f/frames;
-            float absoluteTime=duration*timeNormalised;
-            ImageIO.write(super.render(f, timeNormalised, absoluteTime),
-                    "png", new File(Main.tempDir+getName(startFrame+i)));
+                    ImageIO.write(render(i), "png", new File(Main.tempDir+getFileName(startFrame + i)));
+            }
         }
+
+    public BufferedImage render(int frameNum) throws Exception {
+        BufferedImage f=new BufferedImage(width, height, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        float timeNormalised=frameNum*1.0f/frames;
+        float absoluteTime=duration*timeNormalised;
+        return super.render(f, timeNormalised, absoluteTime);
     }
 
     public int getFrames() {

@@ -35,7 +35,7 @@ public class Preprocess {
     }
 
     private static ArrayList<String> reLine(ArrayList<String> preprocessed_2) throws Exception {
-        ArrayList<String> preprocessed_3 = new ArrayList<>();
+        ArrayList<String> preprocessed_3 = new ArrayList<String>();
         for (int i=0; i<preprocessed_2.size(); i++) {
             if (preprocessed_2.get(i).endsWith("}")) {
                 preprocessed_3.add(preprocessed_2.get(i));

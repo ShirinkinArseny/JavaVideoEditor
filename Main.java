@@ -1,7 +1,6 @@
 package JVE;
 
-import JVE.Parsers.MathParser;
-import JVE.Parsers.SyntaxParser;
+import JVE.Parsers.Video;
 
 public class Main {
 
@@ -9,8 +8,7 @@ public class Main {
     public static String tempDirForIncludes="/home/nameless/Desktop/temp2/";
 
     public static void main(String [] args) throws Exception {
-        MathParser.init();
-        SyntaxParser.parse(args[0]);
+        new Video(args[0], state -> {}).render(state -> {});
     }
 
 }

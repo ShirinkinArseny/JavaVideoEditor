@@ -18,7 +18,18 @@ public class ApplyMultiply extends Command {
 
     @Override
     public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
-        BufferedImageOp multiplyOp = new RescaleOp(parseTimedFloat(color, normalisedTime, absoluteTime), 0, null);
-        return multiplyOp.filter(canva, null);
+
+        short[] modified = new short[256];
+        short[] straight = new short[256];
+        for (int i = 0; i < 256; i++) {
+            straight[i] = (short) i;
+            modified[i] = (short) Math.min(255, (i*parseTimedFloat(color, normalisedTime, absoluteTime)));
+        }
+
+        BufferedImageOp multiplyOp;
+        short[][] invertMap = divideChanels(straight, modified, args);
+        multiplyOp = new LookupOp(new ShortLookupTable(0, invertMap), null);
+
+        return multiplyOp.filter(canva, canva);
     }
 }

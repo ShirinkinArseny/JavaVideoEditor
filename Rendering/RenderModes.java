@@ -1,9 +1,8 @@
-package JVE;
+package JVE.Rendering;
 
+import JVE.Main;
 import JVE.Network.*;
 import JVE.Parsers.*;
-import JVE.Rendering.Render;
-import JVE.Rendering.Scene;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import static JVE.Parsers.ParseUtils.exit;
 import static JVE.Parsers.ParseUtils.printMessage;
 import static JVE.ZipIO.*;
 
-public class RenderServer {
+public class RenderModes {
 
 
     public static enum VideoFramesRenderType {Local, Server, Client}
@@ -30,15 +29,15 @@ public class RenderServer {
     }
 
     public static void setIP(String ip) {
-        RenderServer.ip=ip;
+        RenderModes.ip=ip;
     }
 
     public static void setPort(int port) {
-        RenderServer.port=port;
+        RenderModes.port=port;
     }
 
     public static void setRender(VideoFramesRenderType render) {
-        RenderServer.render=render;
+        RenderModes.render=render;
     }
 
 
@@ -62,7 +61,7 @@ public class RenderServer {
         }
     }
 
-    public static void renderLocalScenes(ArrayList<Scene> scenes) throws Exception {
+    public static void renderLocalScenes(ArrayList<Scene> scenes, RenderEvent changes) throws Exception {
         cleanTempDir();
         runInjections();
 
@@ -74,17 +73,19 @@ public class RenderServer {
             summary += s.getFrames();
         }
 
+        changes.run(0);
         for (Scene s : scenes) {
-            s.render(framesCount);
+            s.renderAndSave(framesCount);
             framesCount += s.getFrames();
             scenesDone++;
             System.out.println("Framerender: ready " + framesCount + "/" + summary + " frames, " + scenesDone + "/" + scenes.size() + " scenes");
+            changes.run(framesCount*1f/summary);
         }
 
         Render.renderFromFrames_ffmpeg(Main.tempDir + "out.mp4");
     }
 
-    public static void renderServerScenes(ArrayList<Scene> scenes) throws Exception {
+    public static void renderServerScenes(ArrayList<Scene> scenes, RenderEvent changes) throws Exception {
         printMessage("Starting server work...");
 
         cleanTempDir();
@@ -104,8 +105,8 @@ public class RenderServer {
                 c.sendMessage("MACROS " + m.getCode());
                 printMessage("Macroses sent: "+m.getCode());
             }
-            c.sendMessage("PREPARE " + SyntaxParser.getFPS() +
-                    " " + SyntaxParser.getW() + " " + SyntaxParser.getH());
+            c.sendMessage("PREPARE " + Video.getFPS() +
+                    " " + Video.getW() + " " + Video.getH());
         }, c -> {
             printMessage("Client "+c.toString()+" disconnected, returning his task: "+c.getDuty());
             scenes.add(scenes.get(Integer.valueOf(c.getDuty())));
@@ -154,7 +155,7 @@ public class RenderServer {
         }, Main.tempDir);
     }
 
-    public static void renderClientScenes() throws Exception {
+    public static void renderClientScenes(RenderEvent changes) throws Exception {
         printMessage("Starting client work...");
         cleanTempDirForIncludes();
         ParseUtils.addPath(Main.tempDirForIncludes);
@@ -163,7 +164,7 @@ public class RenderServer {
                 printMessage("Incoming message: " + message);
 
                 if (message.startsWith("SCENE")) {
-                    printMessage("Starting render scene");
+                    printMessage("Starting renderAndSave scene");
                     cleanTempDir();
                     printMessage("Tempfolder cleaned");
                     String[] code = message.substring(6).split("\n");
@@ -172,7 +173,7 @@ public class RenderServer {
                     printMessage("Arguments divided");
                     Scene s = SceneBlockParser.parseSceneBlock(src);
                     printMessage("Scene parsed");
-                    s.render(0);
+                    s.renderAndSave(0);
                     printMessage("Scene has been rendered");
                     Render.renderFromFrames_ffmpeg("Scene.mp4");
                     c.sendFile(new File(Main.tempDir + "Scene.mp4"));
@@ -201,7 +202,7 @@ public class RenderServer {
                     }
                 } else if (message.startsWith("PREPARE")) {
                     String[] values = message.split(" ");
-                    SyntaxParser.setBases(MathParser.parseInt(values[1]),
+                    Video.setBases(MathParser.parseInt(values[1]),
                             MathParser.parseInt(values[2]), MathParser.parseInt(values[3]));
                     c.sendMessage("DONE");
                     printMessage("Prepared");
@@ -213,14 +214,14 @@ public class RenderServer {
         }, Main.tempDirForIncludes);
     }
 
-    public static void renderScenes(ArrayList<Scene> scenes) throws Exception {
+    public static void renderScenes(ArrayList<Scene> scenes, RenderEvent changes) throws Exception {
         switch (render) {
 
-            case Local: renderLocalScenes(scenes);
+            case Local: renderLocalScenes(scenes, changes);
                 break;
-            case Server: renderServerScenes(scenes);
+            case Server: renderServerScenes(scenes, changes);
                 break;
-            case Client: renderClientScenes();
+            case Client: renderClientScenes(changes);
                 break;
         }
     }

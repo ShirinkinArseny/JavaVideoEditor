@@ -3,12 +3,9 @@ package JVE.Parsers;
 import JVE.Rendering.SceneLayer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import static JVE.Parsers.LayerBlockParser.parseLayerBlock;
 import static JVE.Parsers.ParseUtils.exit;
 import static JVE.Parsers.ParseUtils.getArguments;
-import static JVE.RenderServer.getNeedTranslating;
 
 public class Macros {
 
@@ -62,11 +59,10 @@ public class Macros {
     }
 
     public static void parseMacros(ArrayList<String> code2) throws Exception {
-        ParseUtils.printMessage(Arrays.toString(code2.toArray()));
-
         ArrayList<String> code=new ArrayList<>();
         for (String s: code2)
         code.add(s);
+
             String name = null;
             if (code.get(0).startsWith("\\name")) {
                 name = getArguments(code.get(0))[0];
@@ -81,6 +77,10 @@ public class Macros {
                 exit("Command before setting arguments: [" + code.get(0) + "] ");
             macroses.add(new Macros(name, params, code, code2));
 
+    }
+
+    public static void cleanMacroses() {
+        macroses.clear();
     }
 
 }

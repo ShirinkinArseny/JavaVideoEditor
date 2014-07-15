@@ -2,7 +2,7 @@ package JVE.Commands.Primitives;
 
 import JVE.Commands.Command;
 import JVE.Parsers.MathParser;
-import JVE.Parsers.SyntaxParser;
+import JVE.Parsers.Video;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -43,8 +43,8 @@ public class FillImage extends Command {
 
         Graphics g = canva.getGraphics();
 
-        for (int x = -dx; x < SyntaxParser.getW(); x += w) {
-            for (int y = -dy; y < SyntaxParser.getH(); y += h) {
+        for (int x = -dx; x < Video.getW(); x += w) {
+            for (int y = -dy; y < Video.getH(); y += h) {
                 g.drawImage(image, x, y, w, h, null);
             }
         }

@@ -7,12 +7,10 @@ import static JVE.Parsers.ParseUtils.exit;
 
 public class MathParser {
 
-    private static ScriptEngineManager mgr;
     private static ScriptEngine engine;
 
     public static void init() {
-        mgr = new ScriptEngineManager();
-        engine = mgr.getEngineByName("JavaScript");
+        engine = new ScriptEngineManager().getEngineByName("JavaScript");
     }
 
     public static String prepareExpression(String s) {

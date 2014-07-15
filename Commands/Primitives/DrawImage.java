@@ -20,14 +20,19 @@ public class DrawImage extends Command {
         return urls;
     }
 
+    private static String[] paramsLast = new String[]{"Filename.png", "0", "0", "200", "200"};
+
     public DrawImage(String[] s) throws Exception {
 
-        params = new String[s.length];
-        for (int i = 0; i < s.length; i++)
+        params = new String[paramsLast.length];
+        System.arraycopy(paramsLast, 0, params, 0, paramsLast.length);
+        for (int i = 0; i < s.length; i++) {
             if (i != 0)
                 params[i] = MathParser.prepareExpression(s[i]);
             else
                 params[i] = s[i];
+            paramsLast[i]=params[i];
+        }
         try {
             image = ImageIO.read(getFile(s[0]));
         } catch (Exception e) {

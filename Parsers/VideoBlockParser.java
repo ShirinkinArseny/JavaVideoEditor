@@ -1,33 +1,17 @@
 package JVE.Parsers;
 
+import JVE.Rendering.RenderEvent;
+
 import java.util.ArrayList;
 
-import static JVE.Parsers.Macros.parseMacros;
 import static JVE.Parsers.ParseUtils.exit;
-import static JVE.Parsers.SyntaxParser.addScene;
+import static JVE.Parsers.Video.addScene;
 
 public class VideoBlockParser {
 
-    static void parseVideoBlock(ArrayList<String> code) throws Exception {
+    static void parseVideoBlock(ArrayList<String> code, RenderEvent r) throws Exception {
         for (int i = 0; i < code.size(); i++) {
-
-            if (code.get(i).startsWith("\\begin{macros}")) {
-
-                ArrayList<String> s = new ArrayList<>();
-                boolean found = false;
-                for (int j = i + 1; j < code.size(); j++) {
-                    s.add(code.get(j));
-                    if (code.get(j).startsWith("\\end{macros}")) {
-                        s.remove(s.size() - 1);
-                        parseMacros(s);
-                        i = j;
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) exit("Macros block is not closed");
-                continue;
-            }
+            r.run(i*1f/code.size());
 
             if (code.get(i).startsWith("\\begin{scene}")) {
 
