@@ -1,6 +1,7 @@
 package JVE.Rendering;
 
 import JVE.Main;
+import JVE.Parsers.Video;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -42,14 +43,35 @@ public class Scene extends SceneLayer {
         return "frame"+num+".png";
     }
 
-    public void renderAndSave(int startFrame) throws Exception {
+    public void renderAndSave(int startFrame, RenderEvent changes) throws Exception {
         for (int i=0; i<frames; i++) {
                     ImageIO.write(render(i), "png", new File(Main.tempDir+getFileName(startFrame + i)));
-            }
+                    if (i%25==0) changes.run((startFrame+i)*1f/ Video.getFrames());
+        }
         }
 
     public BufferedImage render(int frameNum) throws Exception {
+        makePreview=false;
         BufferedImage f=new BufferedImage(width, height, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        float timeNormalised=frameNum*1.0f/frames;
+        float absoluteTime=duration*timeNormalised;
+        return super.render(f, timeNormalised, absoluteTime);
+    }
+
+    public static boolean getObeyProp() {
+        return makePreview;
+    }
+
+    public static float getProp() {
+        return prop;
+    }
+
+    private static boolean makePreview=false;
+    private static float prop;
+    public BufferedImage render(int frameNum, float prop) throws Exception {
+        makePreview=true;
+        Scene.prop=prop;
+        BufferedImage f=new BufferedImage((int)(width*prop), (int)(height*prop), java.awt.image.BufferedImage.TYPE_INT_ARGB);
         float timeNormalised=frameNum*1.0f/frames;
         float absoluteTime=duration*timeNormalised;
         return super.render(f, timeNormalised, absoluteTime);

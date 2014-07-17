@@ -30,14 +30,20 @@ public class Video {
         return fps;
     }
 
+    public static int getFrames() {
+        return frames;
+    }
+
     private static int w = 800;
     private static int h = 600;
     private static int fps = 30;
-    private static int frames=0;
-    private static ArrayList<Scene> scenes = new ArrayList<>();
+    private static int frames;
+    private static ArrayList<Scene> scenes;
 
     public Video(String url, RenderEvent r) throws Exception {
         MathParser.init();
+        scenes = new ArrayList<>();
+        frames=0;
 
         ArrayList<String> code = preprocess(url);
 
@@ -130,18 +136,17 @@ public class Video {
         renderScenes(scenes, change);
     }
 
-    public BufferedImage render(float frameNumber) throws Exception {
-        int num= (int) (frames*frameNumber);
-        for (Scene scene : scenes) {
-            if (num < scene.getFrames()) {
-                return scene.render(num);
-            } else num -= scene.getFrames();
+    public BufferedImage render(float frameNumber, int scenename, float prop) throws Exception {
+        if (scenename==-1) {
+            int num= (int) (frames*frameNumber);
+            for (Scene scene : scenes) {
+                if (num < scene.getFrames()) {
+                    return scene.render(num, prop);
+                } else num -= scene.getFrames();
+            }
+            return null;
         }
-        return null;
-    }
-
-    public BufferedImage render(float frameNumber, int scenename) throws Exception {
-        return scenes.get(scenename).render((int) (frameNumber*scenes.get(scenename).getFrames()));
+        return scenes.get(scenename).render((int) (frameNumber*scenes.get(scenename).getFrames()), prop);
     }
 
     public static String[] getSceneNames() {

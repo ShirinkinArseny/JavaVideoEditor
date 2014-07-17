@@ -20,6 +20,10 @@ public class RenderModes {
 
     public static enum VideoFramesRenderType {Local, Server, Client}
 
+    public static VideoFramesRenderType getType() {
+        return render;
+    }
+
     private static VideoFramesRenderType render=VideoFramesRenderType.Local;
     private static int port;
     private static String ip;
@@ -75,7 +79,7 @@ public class RenderModes {
 
         changes.run(0);
         for (Scene s : scenes) {
-            s.renderAndSave(framesCount);
+            s.renderAndSave(framesCount, changes);
             framesCount += s.getFrames();
             scenesDone++;
             System.out.println("Framerender: ready " + framesCount + "/" + summary + " frames, " + scenesDone + "/" + scenes.size() + " scenes");
@@ -173,7 +177,7 @@ public class RenderModes {
                     printMessage("Arguments divided");
                     Scene s = SceneBlockParser.parseSceneBlock(src);
                     printMessage("Scene parsed");
-                    s.renderAndSave(0);
+                    s.renderAndSave(0, changes);
                     printMessage("Scene has been rendered");
                     Render.renderFromFrames_ffmpeg("Scene.mp4");
                     c.sendFile(new File(Main.tempDir + "Scene.mp4"));

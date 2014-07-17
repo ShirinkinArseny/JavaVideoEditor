@@ -19,6 +19,7 @@ public class ApplyClear extends Command {
     @Override
     public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
         Graphics2D g2 = (Graphics2D) canva.getGraphics();
+        g2.setBackground(new Color(255,255,255,0));
         g2.clearRect(
                 parseTimedInt(params[0], normalisedTime, absoluteTime),
                 parseTimedInt(params[1], normalisedTime, absoluteTime),

@@ -2,6 +2,7 @@ package JVE.Commands.Primitives;
 
 import JVE.Commands.Command;
 import JVE.Parsers.MathParser;
+import JVE.Rendering.Scene;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -30,12 +31,20 @@ public class DrawEllipse extends Command {
                 parseTimedInt(params[6], normalisedTime, absoluteTime),
                 parseTimedInt(params[7], normalisedTime, absoluteTime)
         ));
-        g.fillRect(
-                parseTimedInt(params[0], normalisedTime, absoluteTime),
-                parseTimedInt(params[1], normalisedTime, absoluteTime),
-                parseTimedInt(params[2], normalisedTime, absoluteTime),
-                parseTimedInt(params[3], normalisedTime, absoluteTime)
+        if (Scene.getObeyProp())
+        g.fillOval(
+                (int) (parseTimedInt(params[0], normalisedTime, absoluteTime)*Scene.getProp()),
+                (int) (parseTimedInt(params[1], normalisedTime, absoluteTime)*Scene.getProp()),
+                (int) (parseTimedInt(params[2], normalisedTime, absoluteTime)*Scene.getProp()),
+                (int) (parseTimedInt(params[3], normalisedTime, absoluteTime)*Scene.getProp())
         );
+        else
+            g.fillOval(
+                    parseTimedInt(params[0], normalisedTime, absoluteTime),
+                    parseTimedInt(params[1], normalisedTime, absoluteTime),
+                    parseTimedInt(params[2], normalisedTime, absoluteTime),
+                    parseTimedInt(params[3], normalisedTime, absoluteTime)
+            );
         return canva;
     }
 }

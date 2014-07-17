@@ -28,12 +28,13 @@ public class FormTest extends JFrame {
         Graphics2D g = (Graphics2D) frame.getGraphics();
         BufferedImage frameToDraw;
         try {
+            float prop=frame.getWidth()*1f/Video.getW();
             if (sceneSelect.getSelectedIndex() == 0)
-                frameToDraw = video.render(move.getValue() * 1f / move.getMaximum());
+                frameToDraw = video.render(move.getValue() * 1f / move.getMaximum(), -1, prop);
             else
                 frameToDraw = video.render(move.getValue() * 1f / move.getMaximum(),
-                        sceneSelect.getSelectedIndex() - 1);
-            g.drawImage(frameToDraw, 0, 0, frame.getWidth(), frame.getWidth()*Video.getH()/Video.getW(), null);
+                        sceneSelect.getSelectedIndex() - 1, prop);
+            g.drawImage(frameToDraw, 0, 0, frame.getWidth(), (int)(prop*Video.getH()), null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -88,7 +89,8 @@ public class FormTest extends JFrame {
             int ret = fileopen.showDialog(null, "Select file");
             if (ret == JFileChooser.APPROVE_OPTION) {
                 File file = fileopen.getSelectedFile();
-                name = file.getAbsolutePath();
+                name = file.getPath();
+                System.out.println(name);
                 new Thread(() -> {
                     lock();
                     reloadVideo();

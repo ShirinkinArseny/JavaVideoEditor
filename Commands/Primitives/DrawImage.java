@@ -2,6 +2,8 @@ package JVE.Commands.Primitives;
 
 import JVE.Commands.Command;
 import JVE.Parsers.MathParser;
+import JVE.Rendering.RenderModes;
+import JVE.Rendering.Scene;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -33,24 +35,34 @@ public class DrawImage extends Command {
                 params[i] = s[i];
             paramsLast[i]=params[i];
         }
+        if (RenderModes.getType()!= RenderModes.VideoFramesRenderType.Server) {
         try {
             image = ImageIO.read(getFile(s[0]));
         } catch (Exception e) {
             System.err.println("Failed to load image: " + s[0]);
             throw e;
-        }
+        }   }
     }
 
     @Override
     public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
 
+        if (Scene.getObeyProp())
         canva.getGraphics().drawImage(image,
-                parseTimedInt(params[1], normalisedTime, absoluteTime),
-                parseTimedInt(params[2], normalisedTime, absoluteTime),
-                parseTimedInt(params[3], normalisedTime, absoluteTime),
-                parseTimedInt(params[4], normalisedTime, absoluteTime),
+                (int) (parseTimedInt(params[1], normalisedTime, absoluteTime)*Scene.getProp()),
+                (int) (parseTimedInt(params[2], normalisedTime, absoluteTime)*Scene.getProp()),
+                (int) (parseTimedInt(params[3], normalisedTime, absoluteTime)*Scene.getProp()),
+                (int) (parseTimedInt(params[4], normalisedTime, absoluteTime)*Scene.getProp()),
                 null, null
         );
+        else
+            canva.getGraphics().drawImage(image,
+                    parseTimedInt(params[1], normalisedTime, absoluteTime),
+                    parseTimedInt(params[2], normalisedTime, absoluteTime),
+                    parseTimedInt(params[3], normalisedTime, absoluteTime),
+                    parseTimedInt(params[4], normalisedTime, absoluteTime),
+                    null, null
+            );
         return canva;
     }
 }

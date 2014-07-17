@@ -2,6 +2,7 @@ package JVE.Commands.Primitives;
 
 import JVE.Commands.Command;
 import JVE.Parsers.MathParser;
+import JVE.Rendering.Scene;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -46,11 +47,20 @@ public class DrawString extends Command {
                 parseTimedInt(params[7], normalisedTime, absoluteTime),
                 parseTimedInt(params[8], normalisedTime, absoluteTime)
         ));
+        if (Scene.getObeyProp()){
+            f = new Font(params[3], Font.PLAIN, (int) (MathParser.parseInt(params[4])*Scene.getProp()));
         g.drawString(
                 params[0],
-                parseTimedInt(params[1], normalisedTime, absoluteTime),
-                parseTimedInt(params[2], normalisedTime, absoluteTime)
+                parseTimedInt(params[1], normalisedTime, absoluteTime)*Scene.getProp(),
+                parseTimedInt(params[2], normalisedTime, absoluteTime)*Scene.getProp()
         );
+        }
+        else
+            g.drawString(
+                    params[0],
+                    parseTimedInt(params[1], normalisedTime, absoluteTime),
+                    parseTimedInt(params[2], normalisedTime, absoluteTime)
+            );
         return canva;
     }
 }
