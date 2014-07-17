@@ -1,5 +1,6 @@
 package JVE.Parsers;
 
+import JVE.Commands.Primitives.DrawImage;
 import JVE.Rendering.RenderEvent;
 import JVE.Rendering.Scene;
 
@@ -42,6 +43,8 @@ public class Video {
 
     public Video(String url, RenderEvent r) throws Exception {
         MathParser.init();
+        DrawImage.init();
+        ParseUtils.cleanPathes();
         scenes = new ArrayList<>();
         frames=0;
 
@@ -102,7 +105,7 @@ public class Video {
                         parseVideoBlock(s, r);
                         for (Scene scene: scenes)
                             frames+=scene.getFrames();
-                        System.out.println("All scenes are parsed");
+                        ParseUtils.printMessage("All scenes are parsed");
                         return;
                     }
                 }

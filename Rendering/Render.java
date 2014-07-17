@@ -1,20 +1,12 @@
 package JVE.Rendering;
 
 import JVE.Main;
+import JVE.Parsers.ParseUtils;
 import JVE.Parsers.Video;
 
 import java.io.FileWriter;
-import java.io.IOException;
 
 public class Render {
-
-    public static void render_mencoder(int fps, int w, int h, String filename) {
-        try {
-            ShellUsing.runCommand("cd " + Main.tempDir + "&& mencoder mf://*.png -mf w=" + w + ":h=" + h + ":fps=" + fps + ":type=png -ovc lavc \\ -lavcopts vcodec=mpeg4:mbd=2:trell -oac copy -o " + filename);
-        } catch (IOException ex) {
-            System.out.println("Error in rendering");
-        }
-    }
 
     public static void renderFromFrames_ffmpeg(String filename) {
         try {
@@ -23,10 +15,10 @@ public class Render {
             String command="cd "+ Main.tempDir+" && " +
                     "ffmpeg "+//-i /home/nameless/hs2.ogg" +
                     " -r "+ Video.getFPS()+" -i frame%04d.png -c:v libx264 -crf 0 -strict -2 -y "+filename;
-            System.out.println("Running: "+command);
+            ParseUtils.printMessage("Running: " + command);
             ShellUsing.runCommand(command);
         } catch (Exception ex) {
-            System.out.println("Error in rendering");
+            ParseUtils.printMessage("Error in rendering");
         }
     }
 
@@ -41,10 +33,10 @@ public class Render {
             fw.close();
             String command="cd "+ Main.tempDir+" && "+
                     "ffmpeg -f concat -i inputs.txt -c copy "+filename;
-            System.out.println("Running: "+command);
+            ParseUtils.printMessage("Running: " + command);
             ShellUsing.runCommand(command);
         } catch (Exception ex) {
-            System.out.println("Error in rendering");
+            ParseUtils.printMessage("Error in rendering");
         }
     }
 

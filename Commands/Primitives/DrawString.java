@@ -27,7 +27,10 @@ public class DrawString extends Command {
 
         if (params.length > 3) {
             try {
-                f = new Font(params[3], Font.PLAIN, MathParser.parseInt(params[4]));
+                if (Scene.getObeyProp())
+                    f = new Font(params[3], Font.PLAIN, (int) (MathParser.parseInt(params[4])*Scene.getProp()));
+                else
+                    f = new Font(params[3], Font.PLAIN, MathParser.parseInt(params[4]));
             } catch (Exception e) {
                 System.err.println("Failed to set up font " + Arrays.toString(s));
             }
@@ -48,8 +51,7 @@ public class DrawString extends Command {
                 parseTimedInt(params[8], normalisedTime, absoluteTime)
         ));
         if (Scene.getObeyProp()){
-            f = new Font(params[3], Font.PLAIN, (int) (MathParser.parseInt(params[4])*Scene.getProp()));
-        g.drawString(
+            g.drawString(
                 params[0],
                 parseTimedInt(params[1], normalisedTime, absoluteTime)*Scene.getProp(),
                 parseTimedInt(params[2], normalisedTime, absoluteTime)*Scene.getProp()

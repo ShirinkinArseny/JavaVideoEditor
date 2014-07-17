@@ -3,13 +3,15 @@ package JVE.Parsers;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 
 public class ParseUtils {
 
     private static ArrayList<String> pathes=new ArrayList<>();
+
+    public static void cleanPathes() {
+        pathes.clear();
+    }
 
     public static void addPath(String s) {
         if (!s.endsWith("/"))
@@ -114,4 +116,7 @@ public class ParseUtils {
         System.out.println(message);
     }
 
+    public static void printMessage(int message) {
+        System.out.write(message);
+    }
 }

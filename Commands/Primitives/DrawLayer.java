@@ -6,15 +6,10 @@ import JVE.Rendering.Scene;
 import JVE.Rendering.SceneLayer;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 public class DrawLayer extends Command {
 
     private SceneLayer layer;
-
-    public ArrayList<String> getUsedFilesList() {
-        return layer.getUsedFilesList();
-    }
 
     public DrawLayer(SceneLayer l) throws Exception {
         layer = l;

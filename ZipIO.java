@@ -6,6 +6,7 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -18,7 +19,12 @@ public class ZipIO {
         for (String fileURL : files) {
             File file = ParseUtils.getFile(fileURL);
             ZipEntry zipEntry = new ZipEntry(file.getName());
-            zipOutputStream.putNextEntry(zipEntry);
+            try {
+                zipOutputStream.putNextEntry(zipEntry);
+            }
+            catch (ZipException e) {
+                ParseUtils.printMessage("File "+file.getName()+ " is already exists, ignoring...");
+            }
             FileInputStream fileInputStream = new FileInputStream(file);
             for (int c = fileInputStream.read(); c != -1; c = fileInputStream.read())
                 zipOutputStream.write(c);

@@ -90,7 +90,6 @@ public class FormTest extends JFrame {
             if (ret == JFileChooser.APPROVE_OPTION) {
                 File file = fileopen.getSelectedFile();
                 name = file.getPath();
-                System.out.println(name);
                 new Thread(() -> {
                     lock();
                     reloadVideo();

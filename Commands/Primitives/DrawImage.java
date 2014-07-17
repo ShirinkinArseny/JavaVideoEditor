@@ -2,6 +2,7 @@ package JVE.Commands.Primitives;
 
 import JVE.Commands.Command;
 import JVE.Parsers.MathParser;
+import JVE.Parsers.ParseUtils;
 import JVE.Rendering.RenderModes;
 import JVE.Rendering.Scene;
 
@@ -13,12 +14,17 @@ import static JVE.Parsers.ParseUtils.getFile;
 
 public class DrawImage extends Command {
 
-    private java.awt.image.BufferedImage image;
+    private int image;
     private String[] params;
+    private static ArrayList<String> urls;
+    private static ArrayList<BufferedImage> images;
 
-    public ArrayList<String> getUsedFilesList() {
-        ArrayList<String> urls = new ArrayList<>();
-        urls.add(params[0]);
+    public static void init() {
+        urls=new ArrayList<>();
+        images=new ArrayList<>();
+    }
+
+    public static ArrayList<String> getUsedFilesList() {
         return urls;
     }
 
@@ -35,20 +41,29 @@ public class DrawImage extends Command {
                 params[i] = s[i];
             paramsLast[i]=params[i];
         }
-        if (RenderModes.getType()!= RenderModes.VideoFramesRenderType.Server) {
         try {
-            image = ImageIO.read(getFile(s[0]));
+            int alreadyHere=urls.indexOf(s[0]);
+            if (alreadyHere==-1) {
+                urls.add(s[0]);
+                if (RenderModes.getType()!= RenderModes.VideoFramesRenderType.Server) {
+                images.add(ImageIO.read(getFile(s[0])));
+                ParseUtils.printMessage("Loaded image: " + s[0]);  }
+                else
+                    ParseUtils.printMessage("Added to URL list: "+s[0]);
+                image =images.size()-1;
+            }
+            else
+                image =alreadyHere;
         } catch (Exception e) {
-            System.err.println("Failed to load image: " + s[0]);
-            throw e;
-        }   }
+            ParseUtils.exit("Failed to load image: " + s[0]);
+        }
     }
 
     @Override
     public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
 
         if (Scene.getObeyProp())
-        canva.getGraphics().drawImage(image,
+        canva.getGraphics().drawImage(images.get(image),
                 (int) (parseTimedInt(params[1], normalisedTime, absoluteTime)*Scene.getProp()),
                 (int) (parseTimedInt(params[2], normalisedTime, absoluteTime)*Scene.getProp()),
                 (int) (parseTimedInt(params[3], normalisedTime, absoluteTime)*Scene.getProp()),
@@ -56,7 +71,7 @@ public class DrawImage extends Command {
                 null, null
         );
         else
-            canva.getGraphics().drawImage(image,
+            canva.getGraphics().drawImage(images.get(image),
                     parseTimedInt(params[1], normalisedTime, absoluteTime),
                     parseTimedInt(params[2], normalisedTime, absoluteTime),
                     parseTimedInt(params[3], normalisedTime, absoluteTime),

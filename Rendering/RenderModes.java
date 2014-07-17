@@ -1,5 +1,6 @@
 package JVE.Rendering;
 
+import JVE.Commands.Primitives.DrawImage;
 import JVE.Main;
 import JVE.Network.*;
 import JVE.Parsers.*;
@@ -82,7 +83,7 @@ public class RenderModes {
             s.renderAndSave(framesCount, changes);
             framesCount += s.getFrames();
             scenesDone++;
-            System.out.println("Framerender: ready " + framesCount + "/" + summary + " frames, " + scenesDone + "/" + scenes.size() + " scenes");
+            ParseUtils.printMessage("Framerender: ready " + framesCount + "/" + summary + " frames, " + scenesDone + "/" + scenes.size() + " scenes");
             changes.run(framesCount*1f/summary);
         }
 
@@ -109,6 +110,17 @@ public class RenderModes {
                 c.sendMessage("MACROS " + m.getCode());
                 printMessage("Macroses sent: "+m.getCode());
             }
+
+            printMessage("Searching used files");
+            ArrayList<String> files = DrawImage.getUsedFilesList();
+            printMessage("Files count: " + files.size());
+            if (!files.isEmpty()) {
+                zip(files, Main.tempDirForIncludes + "archive.zip");
+                printMessage("Stuff zipped");
+                c.sendFile(new File(Main.tempDirForIncludes + "archive.zip"));
+                printMessage("Stuff sent");
+            }
+
             c.sendMessage("PREPARE " + Video.getFPS() +
                     " " + Video.getW() + " " + Video.getH());
         }, c -> {
@@ -122,16 +134,6 @@ public class RenderModes {
                 if (number[0] < scenes.size()) {
                     printMessage("Starting send scene");
                     Scene copy = scenes.get(number[0]);
-
-                    printMessage("Searching used files");
-                    ArrayList<String> files = copy.getUsedFilesList();
-                    printMessage("Files count: " + files.size());
-                    if (!files.isEmpty()) {
-                        zip(files, Main.tempDirForIncludes + "archive.zip");
-                        printMessage("Stuff zipped");
-                        c.sendFile(new File(Main.tempDirForIncludes + "archive.zip"));
-                        printMessage("Stuff sent");
-                    }
 
                     c.setDuty(String.valueOf(number[0]));
                     dutiesCount[0]++;
