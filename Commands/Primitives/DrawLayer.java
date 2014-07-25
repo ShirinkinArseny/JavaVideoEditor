@@ -13,6 +13,7 @@ public class DrawLayer extends Command {
 
     public DrawLayer(SceneLayer l) throws Exception {
         layer = l;
+        //todo: configurable layer size (to not crop out-of-screen stuff)
     }
 
     @Override
