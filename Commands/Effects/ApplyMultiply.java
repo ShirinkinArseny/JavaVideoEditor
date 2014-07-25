@@ -3,7 +3,10 @@ package JVE.Commands.Effects;
 import JVE.Commands.Command;
 import JVE.Parsers.MathParser;
 
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.LookupOp;
+import java.awt.image.ShortLookupTable;
 
 public class ApplyMultiply extends Command {
 

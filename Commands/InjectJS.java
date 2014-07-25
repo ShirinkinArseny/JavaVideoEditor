@@ -1,6 +1,5 @@
 package JVE.Commands;
 
-import JVE.Commands.Command;
 import JVE.Parsers.MathParser;
 
 import java.awt.image.BufferedImage;

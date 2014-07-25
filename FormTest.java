@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import static JVE.Parsers.Macros.cleanMacroses;
-import static JVE.Parsers.MathParser.runInjections;
 
 public class FormTest extends JFrame {
     private JPanel bgPanel;
@@ -36,6 +35,7 @@ public class FormTest extends JFrame {
                         sceneSelect.getSelectedIndex() - 1, prop);
             g.drawImage(frameToDraw, 0, 0, frame.getWidth(), (int)(prop*Video.getH()), null);
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: "+e, "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
@@ -45,9 +45,8 @@ public class FormTest extends JFrame {
         try {
             cleanMacroses();
             video = new Video(name, state -> progress.setValue((int) (state * progress.getMaximum())));
-            runInjections();
-            JOptionPane.showMessageDialog(null, "Parsed!");
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: "+e, "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
         sceneSelect.removeAllItems();
@@ -58,6 +57,7 @@ public class FormTest extends JFrame {
     }
 
     private void lock() {
+        progress.setValue(0);
         progress.setVisible(true);
         move.setVisible(false);
         loadButton.setVisible(false);
@@ -98,7 +98,13 @@ public class FormTest extends JFrame {
             }
         });
 
-        recompileButton.addActionListener(e -> reloadVideo());
+        recompileButton.addActionListener(e -> {
+            new Thread(() -> {
+                lock();
+                reloadVideo();
+                unlock();
+            }).start();
+        });
 
         render.addActionListener(e -> new Thread(() -> {
             lock();
@@ -108,7 +114,7 @@ public class FormTest extends JFrame {
                     move.setValue((int) (state*move.getMaximum()));
                 });
             } catch (Exception e1) {
-                e1.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error: " + e, "Error", JOptionPane.ERROR_MESSAGE);
             }
             progress.setValue(0);
             JOptionPane.showMessageDialog(null, "Rendered!");
@@ -118,11 +124,7 @@ public class FormTest extends JFrame {
         exitButton.addActionListener(e -> System.exit(0));
 
         move.addChangeListener(e -> {
-            try {
                 updateFrame();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
         });
 
         pack();

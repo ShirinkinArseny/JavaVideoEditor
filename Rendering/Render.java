@@ -13,7 +13,7 @@ public class Render {
             //String command="cxd "+JVE.tempDir+" && " +
             //        "ffmpeg "+audio+" -i frame%04d.png -r "+fps+" -c:v libx264 -crf 0 -strict -2 "+filename;
             String command="cd "+ Main.tempDir+" && " +
-                    "ffmpeg "+//-i /home/nameless/hs2.ogg" +
+                    "ffmpeg -i /home/nameless/Projects/ЭОРСРЯ/partl.mp3" +
                     " -r "+ Video.getFPS()+" -i frame%04d.png -c:v libx264 -crf 0 -strict -2 -y "+filename;
             ParseUtils.printMessage("Running: " + command);
             ShellUsing.runCommand(command);

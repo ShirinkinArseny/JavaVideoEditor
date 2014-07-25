@@ -9,9 +9,7 @@ import java.util.ArrayList;
 
 import static JVE.Parsers.Macros.parseMacros;
 import static JVE.Parsers.MathParser.addInjection;
-import static JVE.Parsers.ParseUtils.exit;
-import static JVE.Parsers.ParseUtils.getArguments;
-import static JVE.Parsers.ParseUtils.printMessage;
+import static JVE.Parsers.ParseUtils.*;
 import static JVE.Parsers.Preprocess.preprocess;
 import static JVE.Parsers.SceneBlockParser.parseSceneBlock;
 import static JVE.Parsers.VideoBlockParser.parseVideoBlock;
@@ -51,6 +49,8 @@ public class Video {
         ArrayList<String> code = preprocess(url);
 
         for (int i = 0; i < code.size(); i++) {
+
+            //todo plugins mechanism
 
             if (code.get(i).startsWith("\\frameRatio")) {
                 fps = Integer.valueOf(getArguments(code.get(i))[0]);
@@ -109,8 +109,7 @@ public class Video {
                         return;
                     }
                 }
-                exit("Video block is not closed");
-                continue;
+                throw new Exception("Video block is not closed");
             }
 
             if (code.get(i).startsWith("\\begin{macros}")) {
@@ -127,11 +126,11 @@ public class Video {
                         break;
                     }
                 }
-                if (!found) exit("Macros block is not closed");
+                if (!found) throw new Exception("Macros block is not closed");
                 continue;
             }
 
-            exit("Unknowable command in main block: [" + code.get(i) + "] Maybe it is placed wrong");
+            throw new Exception("Unknowable command in main block: [" + code.get(i) + "] Maybe it is placed wrong");
         }
     }
 

@@ -5,13 +5,10 @@ import JVE.Rendering.Scene;
 
 import java.util.ArrayList;
 
-import static JVE.Parsers.MathParser.parseFloat;
 import static JVE.Parsers.LayerBlockParser.parseLayerBlock;
-import static JVE.Parsers.ParseUtils.exit;
+import static JVE.Parsers.MathParser.parseFloat;
 import static JVE.Parsers.ParseUtils.getArguments;
-import static JVE.Parsers.Video.getFPS;
-import static JVE.Parsers.Video.getH;
-import static JVE.Parsers.Video.getW;
+import static JVE.Parsers.Video.*;
 
 public class SceneBlockParser {
 
@@ -23,7 +20,7 @@ public class SceneBlockParser {
                 s.setDuration(parseFloat(getArguments(codeClone.get(0))[0]));
                 codeClone.remove(0);
             } else
-                exit("Command before setting duration: [" + codeClone.get(0) + "] ");
+                throw new Exception("Command before setting duration: [" + codeClone.get(0) + "] ");
 
             if (codeClone.get(0).startsWith("\\name")) {
                 s.setName(getArguments(codeClone.get(0))[0]);

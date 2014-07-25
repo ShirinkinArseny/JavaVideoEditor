@@ -5,9 +5,6 @@ import JVE.Parsers.MathParser;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
 
 public class ApplyClip extends Command {
 

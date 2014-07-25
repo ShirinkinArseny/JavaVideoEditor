@@ -7,13 +7,14 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 
-public class ApplyBlur extends Command {
+public class ApplyMotionBlur extends Command {
 
     private String size;
     private int lastSize=0;
     private ConvolveOp identity;
 
-    public ApplyBlur(String[] s) {
+    public ApplyMotionBlur(String[] s) {
+        //todo: this
         size = MathParser.prepareExpression(s[0]);
     }
 
@@ -23,11 +24,14 @@ public class ApplyBlur extends Command {
         float[][] map = new float[size][size];
         float sizePer2 = size / 2f;
         float maxLength = sizePer2;
+
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                map[i][j] = Math.max(0, (float) (maxLength - Math.sqrt((i - sizePer2) * (i - sizePer2) + (j - sizePer2) * (j - sizePer2))));
+                map[i][j] = 0;
             }
         }
+
+
 
         float sum = 0;
         for (int i = 0; i < size; i++) {

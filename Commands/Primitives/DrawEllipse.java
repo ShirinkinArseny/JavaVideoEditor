@@ -24,6 +24,8 @@ public class DrawEllipse extends Command {
     @Override
     public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
         Graphics2D g = (Graphics2D) canva.getGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
 
         g.setColor(new Color(
                 parseTimedInt(params[4], normalisedTime, absoluteTime),

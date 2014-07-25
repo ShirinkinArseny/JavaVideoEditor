@@ -1,14 +1,13 @@
 package JVE.Parsers;
 
 import JVE.Commands.Effects.*;
-import JVE.Commands.Primitives.*;
 import JVE.Commands.InjectJS;
+import JVE.Commands.Primitives.*;
 import JVE.Rendering.SceneLayer;
 
 import java.util.ArrayList;
 
 import static JVE.Parsers.Macros.useMacros;
-import static JVE.Parsers.ParseUtils.exit;
 import static JVE.Parsers.ParseUtils.getArguments;
 
 public class LayerBlockParser {
@@ -33,7 +32,7 @@ public class LayerBlockParser {
                         break;
                     }
                 }
-                if (!found) exit("Layer block is not closed");
+                if (!found) throw new Exception("Layer block is not closed");
                 continue;
             }
 
@@ -101,7 +100,7 @@ public class LayerBlockParser {
                     s.addCommand(new ApplyCopy(getArguments(code.get(i))));
                     break;
                 default:
-                    exit("Unknowable command in layer block: [" + code.get(i) + "] Maybe it is placed wrong");
+                    throw new Exception("Unknowable command in layer block: [" + code.get(i) + "] Maybe it is placed wrong");
             }
 
         }

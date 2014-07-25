@@ -3,8 +3,8 @@ package JVE.Parsers;
 import JVE.Rendering.SceneLayer;
 
 import java.util.ArrayList;
+
 import static JVE.Parsers.LayerBlockParser.parseLayerBlock;
-import static JVE.Parsers.ParseUtils.exit;
 import static JVE.Parsers.ParseUtils.getArguments;
 
 public class Macros {
@@ -38,14 +38,19 @@ public class Macros {
             }
         }
         if (m==null)
-            exit("No macros with this name: "+args[0]);
+            throw new Exception("No macros with this name: "+args[0]);
 
         ArrayList<String> code2=new ArrayList<>();
 
 
         for (String s: m.code) {
             for (int i = 0; i < m.params.length; i++) {
-                s=s.replaceAll(m.params[i], args[i+1]);
+                try {
+                    s = s.replaceAll(m.params[i], args[i + 1]);
+                }
+                catch (ArrayIndexOutOfBoundsException e) {
+                    throw new Exception("Wrong parameters number in command "+s);
+                }
             }
             code2.add(s);
         }
@@ -68,13 +73,13 @@ public class Macros {
                 name = getArguments(code.get(0))[0];
                 code.remove(0);
             } else
-                exit("Command before setting name: [" + code.get(0) + "] ");
+                throw new Exception("Command before setting name: [" + code.get(0) + "] ");
             String[] params = new String[0];
             if (code.get(0).startsWith("\\params")) {
                 params = getArguments(code.get(0));
                 code.remove(0);
             } else
-                exit("Command before setting arguments: [" + code.get(0) + "] ");
+                throw new Exception("Command before setting arguments: [" + code.get(0) + "] ");
             macroses.add(new Macros(name, params, code, code2));
 
     }

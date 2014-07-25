@@ -3,8 +3,6 @@ package JVE.Parsers;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-import static JVE.Parsers.ParseUtils.exit;
-
 public class MathParser {
 
     private static ScriptEngine engine;
@@ -40,20 +38,15 @@ public class MathParser {
     }
 
     public static float parseFloat(String s) throws Exception {
-        try {
             engine.eval("v=" + s);
             return Float.valueOf(engine.get("v").toString());
-        } catch (Exception e) {
-            exit("Failed to parse string to float: " + s);
-            return -1;
-        }
     }
 
     public static void injectCode(String s) throws Exception {
         try {
             engine.eval(s);
         } catch (Exception e) {
-            exit("Failed to inject code: " + s);
+            throw new Exception("Failed to inject code: " + s);
         }
     }
 
@@ -67,7 +60,8 @@ public class MathParser {
 
     private static String injections="";
 
-    public static void addInjection(String s) {
+    public static void addInjection(String s) throws Exception {
         injections+=s+"\n";
+        injectCode(s);
     }
 }

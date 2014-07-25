@@ -11,6 +11,7 @@ public class ApplyShear extends Command {
     private String[] params;
 
     public ApplyShear(String[] s) {
+        //todo: проверить к-во параметров у эффектов
         params = new String[s.length];
         for (int i = 0; i < s.length; i++)
             params[i] = MathParser.prepareExpression(s[i]);

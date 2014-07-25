@@ -55,7 +55,7 @@ public class DrawImage extends Command {
             else
                 image =alreadyHere;
         } catch (Exception e) {
-            ParseUtils.exit("Failed to load image: " + s[0]);
+            throw new Exception("Failed to load image: " + s[0]);
         }
     }
 

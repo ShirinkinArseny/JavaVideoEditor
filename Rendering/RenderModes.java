@@ -2,7 +2,8 @@ package JVE.Rendering;
 
 import JVE.Commands.Primitives.DrawImage;
 import JVE.Main;
-import JVE.Network.*;
+import JVE.Network.Client;
+import JVE.Network.Server;
 import JVE.Parsers.*;
 
 import java.io.File;
@@ -12,9 +13,9 @@ import java.util.Collections;
 
 import static JVE.Parsers.MathParser.getInjections;
 import static JVE.Parsers.MathParser.runInjections;
-import static JVE.Parsers.ParseUtils.exit;
 import static JVE.Parsers.ParseUtils.printMessage;
-import static JVE.ZipIO.*;
+import static JVE.ZipIO.unzip;
+import static JVE.ZipIO.zip;
 
 public class RenderModes {
 
@@ -196,7 +197,7 @@ public class RenderModes {
                         Macros.parseMacros(macro);
                         printMessage("Macro parsed");
                     } catch (Exception e) {
-                        exit("Failed to parse macros");
+                        throw new Exception("Failed to parse macros: "+macro);
                     }
                 } else if (message.startsWith("INJECTION")) {
                     MathParser.addInjection(message.substring(9));
@@ -204,7 +205,7 @@ public class RenderModes {
                         runInjections();
                         printMessage("Injected");
                     } catch (Exception e) {
-                        exit("Failed to parse js-injection");
+                        throw new Exception("Failed to inject js: "+getInjections());
                     }
                 } else if (message.startsWith("PREPARE")) {
                     String[] values = message.split(" ");

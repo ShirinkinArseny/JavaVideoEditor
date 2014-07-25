@@ -42,7 +42,7 @@ public class Preprocess {
             }
             else {
                 if (i>=preprocessed_2.size()-1)
-                    exit("Command has not got closing bracket: " + preprocessed_2.get(i));
+                    throw new Exception("Command has not got closing bracket: " + preprocessed_2.get(i));
                 preprocessed_2.set(i, preprocessed_2.get(i) + " "+preprocessed_2.get(i+1));
                 preprocessed_2.remove(i + 1);
                 if (i>0) i--;
