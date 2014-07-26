@@ -2,13 +2,15 @@ package JVE.Parsers;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 public class MathParser {
 
     private static ScriptEngine engine;
 
-    public static void init() {
+    public static void init() throws ScriptException {
         engine = new ScriptEngineManager().getEngineByName("JavaScript");
+        setTimes(0, 0);
     }
 
     public static String prepareExpression(String s) {
@@ -21,7 +23,7 @@ public class MathParser {
         s=s.replaceAll("fullSineFadeIn", "(sin(normalTime*3.14-1.57)/2+0.5)");
         s=s.replaceAll("fullSineFadeOut", "(sin(normalTime*3.14+1.57)/2+0.5)");
         s=s.replaceAll("circleFadeIn", "sqrt(2*normalTime-pow(normalTime,2))");
-        s=s.replaceAll("circleFadeOut", "sqrt(1-pow(normalTime,2)");
+        s=s.replaceAll("circleFadeOut", "sqrt(1-pow(normalTime,2))");
         s=s.replaceAll("sin[(]", "Math.sin(");
         s=s.replaceAll("cos[(]", "Math.cos(");
         s=s.replaceAll("tan[(]", "Math.tan(");
@@ -63,5 +65,10 @@ public class MathParser {
     public static void addInjection(String s) throws Exception {
         injections+=s+"\n";
         injectCode(s);
+    }
+
+    public static void setTimes(float nTime, float aTime) throws ScriptException {
+        engine.eval("normalTime=" + nTime);
+        engine.eval("absoluteTime=" + aTime);
     }
 }

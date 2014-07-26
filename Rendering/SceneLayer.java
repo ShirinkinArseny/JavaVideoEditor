@@ -9,10 +9,9 @@ public class SceneLayer {
 
     private ArrayList<Command> commands=new ArrayList<>();
 
-    public BufferedImage render(BufferedImage toDraw, float timeNormalised, float absoluteTime) throws Exception {
-
+    public BufferedImage render(BufferedImage toDraw) throws Exception {
         for (Command c: commands) {
-                toDraw= c.doAction(toDraw, timeNormalised, absoluteTime);
+                toDraw= c.doAction(toDraw);
             }
         return toDraw;
     }
@@ -21,7 +20,5 @@ public class SceneLayer {
         commands.add(c);
     }
 
-    public SceneLayer() {
-    }
 
 }

@@ -13,8 +13,8 @@ public class InjectJS extends Command {
     }
 
     @Override
-    public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
-        MathParser.injectCode(setTimes(code, normalisedTime, absoluteTime));
+    public BufferedImage doAction(BufferedImage canva) throws Exception {
+        MathParser.injectCode(code);
         return canva;
     }
 }

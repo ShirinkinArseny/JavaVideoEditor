@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import static JVE.Parsers.LayerBlockParser.parseLayerBlock;
 import static JVE.Parsers.MathParser.parseFloat;
-import static JVE.Parsers.ParseUtils.getArguments;
+import static JVE.Utils.getArguments;
 import static JVE.Parsers.Video.*;
 
 public class SceneBlockParser {

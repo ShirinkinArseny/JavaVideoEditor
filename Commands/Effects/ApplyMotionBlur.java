@@ -54,8 +54,8 @@ public class ApplyMotionBlur extends Command {
     }
 
     @Override
-    public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
-        int size = parseTimedInt(this.size, normalisedTime, absoluteTime);
+    public BufferedImage doAction(BufferedImage canva) throws Exception {
+        int size = parseTimedInt(this.size);
         if (size > 1) {
             if (size != lastSize) {
                 identity = new ConvolveOp(new Kernel(size, size, getKernel(size)));

@@ -98,13 +98,11 @@ public class FormTest extends JFrame {
             }
         });
 
-        recompileButton.addActionListener(e -> {
-            new Thread(() -> {
-                lock();
-                reloadVideo();
-                unlock();
-            }).start();
-        });
+        recompileButton.addActionListener(e -> new Thread(() -> {
+            lock();
+            reloadVideo();
+            unlock();
+        }).start());
 
         render.addActionListener(e -> new Thread(() -> {
             lock();
@@ -123,9 +121,7 @@ public class FormTest extends JFrame {
 
         exitButton.addActionListener(e -> System.exit(0));
 
-        move.addChangeListener(e -> {
-                updateFrame();
-        });
+        move.addChangeListener(e -> updateFrame());
 
         pack();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

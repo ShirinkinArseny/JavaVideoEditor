@@ -17,15 +17,15 @@ public class ApplyCopy extends Command {
     }
 
     @Override
-    public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
+    public BufferedImage doAction(BufferedImage canva) throws Exception {
         Graphics2D g2 = (Graphics2D) canva.getGraphics();
         g2.copyArea(
-                parseTimedInt(params[0], normalisedTime, absoluteTime),
-                parseTimedInt(params[1], normalisedTime, absoluteTime),
-                parseTimedInt(params[2], normalisedTime, absoluteTime),
-                parseTimedInt(params[3], normalisedTime, absoluteTime),
-                parseTimedInt(params[4], normalisedTime, absoluteTime),
-                parseTimedInt(params[5], normalisedTime, absoluteTime));
+                parseTimedInt(params[0]),
+                parseTimedInt(params[1]),
+                parseTimedInt(params[2]),
+                parseTimedInt(params[3]),
+                parseTimedInt(params[4]),
+                parseTimedInt(params[5]));
         return canva;
     }
 }

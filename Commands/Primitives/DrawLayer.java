@@ -17,14 +17,15 @@ public class DrawLayer extends Command {
     }
 
     @Override
-    public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
+    public BufferedImage doAction(BufferedImage canva) throws Exception {
         BufferedImage f;
         if (Scene.getObeyProp())
         f = new BufferedImage((int) (Video.getW()*Scene.getProp()), (int) (Video.getH()*Scene.getProp()),
                 java.awt.image.BufferedImage.TYPE_INT_ARGB);
         else
             f = new BufferedImage(Video.getW(), Video.getH(), java.awt.image.BufferedImage.TYPE_INT_ARGB);
-        f = layer.render(f, normalisedTime, absoluteTime);
+        f = layer.render(f);
+
         canva.getGraphics().drawImage(f, 0, 0, null);
         return canva;
     }

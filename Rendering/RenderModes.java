@@ -1,10 +1,13 @@
 package JVE.Rendering;
 
 import JVE.Commands.Primitives.DrawImage;
-import JVE.Main;
 import JVE.Network.Client;
 import JVE.Network.Server;
-import JVE.Parsers.*;
+import JVE.Parsers.Macros;
+import JVE.Parsers.MathParser;
+import JVE.Parsers.SceneBlockParser;
+import JVE.Parsers.Video;
+import JVE.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,9 +16,7 @@ import java.util.Collections;
 
 import static JVE.Parsers.MathParser.getInjections;
 import static JVE.Parsers.MathParser.runInjections;
-import static JVE.Parsers.ParseUtils.printMessage;
-import static JVE.ZipIO.unzip;
-import static JVE.ZipIO.zip;
+import static JVE.Utils.*;
 
 public class RenderModes {
 
@@ -47,24 +48,12 @@ public class RenderModes {
     }
 
 
-    private static void cleanTempDir() {
-        cleanDirectory(new File(Main.tempDir));
+    private static void cleanTempDir() throws Exception {
+        cleanDirectory(new File(Video.getTempDir()));
     }
 
-    private static void cleanTempDirForIncludes() {
-        cleanDirectory(new File(Main.tempDirForIncludes));
-    }
-
-    private static void cleanDirectory(File dir) {
-        String[] files = dir.list();
-        for (String file : files) {
-            File f = new File(dir, file);
-            if (f.isDirectory()) {
-                cleanDirectory(f);
-            } else {
-                f.delete();
-            }
-        }
+    private static void cleanTempDirForIncludes() throws Exception {
+        cleanDirectory(new File(Video.getTempDirForIncludes()));
     }
 
     public static void renderLocalScenes(ArrayList<Scene> scenes, RenderEvent changes) throws Exception {
@@ -84,11 +73,11 @@ public class RenderModes {
             s.renderAndSave(framesCount, changes);
             framesCount += s.getFrames();
             scenesDone++;
-            ParseUtils.printMessage("Framerender: ready " + framesCount + "/" + summary + " frames, " + scenesDone + "/" + scenes.size() + " scenes");
+            Utils.printMessage("Framerender: ready " + framesCount + "/" + summary + " frames, " + scenesDone + "/" + scenes.size() + " scenes");
             changes.run(framesCount*1f/summary);
         }
 
-        Render.renderFromFrames_ffmpeg(Main.tempDir + "out.mp4");
+        Render.renderFromFrames_ffmpeg(Video.getTempDir() + "out.mp4");
     }
 
     public static void renderServerScenes(ArrayList<Scene> scenes, RenderEvent changes) throws Exception {
@@ -116,9 +105,9 @@ public class RenderModes {
             ArrayList<String> files = DrawImage.getUsedFilesList();
             printMessage("Files count: " + files.size());
             if (!files.isEmpty()) {
-                zip(files, Main.tempDirForIncludes + "archive.zip");
+                zip(files, Video.getTempDirForIncludes() + "archive.zip");
                 printMessage("Stuff zipped");
-                c.sendFile(new File(Main.tempDirForIncludes + "archive.zip"));
+                c.sendFile(new File(Video.getTempDirForIncludes() + "archive.zip"));
                 printMessage("Stuff sent");
             }
 
@@ -141,8 +130,7 @@ public class RenderModes {
                     c.sendMessage("SCENE " + copy.getSource());
                     number[0]++;
                     printMessage("Scene sent: " + copy.getSource());
-                    //todo: intelligent system
-                    printMessage("Also: " + (scenes.size() - number[0]) + " scenes");
+                    printMessage("Remaining " + (scenes.size() - number[0]) + " scenes");
                 } else {
                     if (dutiesCount[0] == 0) {
                         Render.renderFromVideos_ffmpeg(srcSize, "Out.mp4");
@@ -153,19 +141,19 @@ public class RenderModes {
                 }
             }
         }, (c, f) -> {
-            f.renameTo(new File(Main.tempDir + c.getDuty()+".mp4"));
+            f.renameTo(new File(Video.getTempDir() + c.getDuty()+".mp4"));
             printMessage("MP4 named: " + c.getDuty()+".mp4");
             c.setDuty(null);
             dutiesCount[0]--;
 
             printMessage("MP4 catched");
-        }, Main.tempDir);
+        }, Video.getTempDir());
     }
 
     public static void renderClientScenes(RenderEvent changes) throws Exception {
         printMessage("Starting client work...");
         cleanTempDirForIncludes();
-        ParseUtils.addPath(Main.tempDirForIncludes);
+        Utils.addPath(Video.getTempDirForIncludes());
         new Client(ip, port, (c, message) -> {
 
                 printMessage("Incoming message: " + message);
@@ -183,7 +171,7 @@ public class RenderModes {
                     s.renderAndSave(0, changes);
                     printMessage("Scene has been rendered");
                     Render.renderFromFrames_ffmpeg("Scene.mp4");
-                    c.sendFile(new File(Main.tempDir + "Scene.mp4"));
+                    c.sendFile(new File(Video.getTempDir() + "Scene.mp4"));
                     printMessage("MP4 sent");
                     c.sendMessage("DONE");
                     printMessage("Next task requested");
@@ -216,9 +204,9 @@ public class RenderModes {
                 }
         }, (c, f) -> {
                 printMessage("Stuff catched");
-                unzip(f, Main.tempDirForIncludes);
+                unzip(f, Video.getTempDirForIncludes());
                 printMessage("Stuff unzipped");
-        }, Main.tempDirForIncludes);
+        }, Video.getTempDirForIncludes());
     }
 
     public static void renderScenes(ArrayList<Scene> scenes, RenderEvent changes) throws Exception {

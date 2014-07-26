@@ -18,10 +18,10 @@ public class ApplyScale extends Command {
     }
 
     @Override
-    public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
+    public BufferedImage doAction(BufferedImage canva) throws Exception {
 
-        int dx = parseTimedInt(args[0], normalisedTime, absoluteTime);
-        int dy = parseTimedInt(args[1], normalisedTime, absoluteTime);
+        int dx = parseTimedInt(args[0]);
+        int dy = parseTimedInt(args[1]);
 
         BufferedImage f = new BufferedImage(Video.getW(), Video.getH(), BufferedImage.TYPE_INT_ARGB);
         f.getGraphics().drawImage(canva, 0, 0, dx, dy, null);

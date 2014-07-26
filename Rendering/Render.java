@@ -1,42 +1,44 @@
 package JVE.Rendering;
 
-import JVE.Main;
-import JVE.Parsers.ParseUtils;
 import JVE.Parsers.Video;
+import JVE.Utils;
 
 import java.io.FileWriter;
+
+import static JVE.Utils.cleanByMask;
 
 public class Render {
 
     public static void renderFromFrames_ffmpeg(String filename) {
         try {
-            //String command="cxd "+JVE.tempDir+" && " +
-            //        "ffmpeg "+audio+" -i frame%04d.png -r "+fps+" -c:v libx264 -crf 0 -strict -2 "+filename;
-            String command="cd "+ Main.tempDir+" && " +
-                    "ffmpeg -i /home/nameless/Projects/ЭОРСРЯ/partl.mp3" +
+            String audio=Video.getAudio()!=null?" -i "+Video.getAudio():"";
+            String command="cd "+ Video.getTempDir()+" && " +
+                    "ffmpeg " +audio+
                     " -r "+ Video.getFPS()+" -i frame%04d.png -c:v libx264 -crf 0 -strict -2 -y "+filename;
-            ParseUtils.printMessage("Running: " + command);
+            Utils.printMessage("Running: " + command);
             ShellUsing.runCommand(command);
+            cleanByMask(Video.getTempDir(), ".png");
         } catch (Exception ex) {
-            ParseUtils.printMessage("Error in rendering");
+            Utils.printMessage("Error in rendering");
         }
     }
 
     public static void renderFromVideos_ffmpeg(int count, String filename) {
         try {
+            String audio=Video.getAudio()!=null?" -i "+Video.getAudio():"";
             String names="";
             for (int i=0; i<count; i++) {
                 names+="file '"+i+".mp4'\n";
             }
-            FileWriter fw = new FileWriter(Main.tempDir+"inputs.txt");
+            FileWriter fw = new FileWriter(Video.getTempDir()+"inputs.txt");
                 fw.write(names);
             fw.close();
-            String command="cd "+ Main.tempDir+" && "+
-                    "ffmpeg -f concat -i inputs.txt -c copy "+filename;
-            ParseUtils.printMessage("Running: " + command);
+            String command="cd "+ Video.getTempDir()+" && "+
+                    "ffmpeg "+audio+"-f concat -i inputs.txt -c copy "+filename;
+            Utils.printMessage("Running: " + command);
             ShellUsing.runCommand(command);
         } catch (Exception ex) {
-            ParseUtils.printMessage("Error in rendering");
+            Utils.printMessage("Error in rendering");
         }
     }
 

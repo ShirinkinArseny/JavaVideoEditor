@@ -2,7 +2,7 @@ package JVE.Commands.Primitives;
 
 import JVE.Commands.Command;
 import JVE.Parsers.MathParser;
-import JVE.Parsers.ParseUtils;
+import JVE.Utils;
 import JVE.Rendering.RenderModes;
 import JVE.Rendering.Scene;
 
@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import static JVE.Parsers.ParseUtils.getFile;
+import static JVE.Utils.getFile;
 
 public class DrawImage extends Command {
 
@@ -47,35 +47,35 @@ public class DrawImage extends Command {
                 urls.add(s[0]);
                 if (RenderModes.getType()!= RenderModes.VideoFramesRenderType.Server) {
                 images.add(ImageIO.read(getFile(s[0])));
-                ParseUtils.printMessage("Loaded image: " + s[0]);  }
+                Utils.printMessage("Loaded image: " + s[0]);  }
                 else
-                    ParseUtils.printMessage("Added to URL list: "+s[0]);
+                    Utils.printMessage("Added to URL list: " + s[0]);
                 image =images.size()-1;
             }
             else
                 image =alreadyHere;
-        } catch (Exception e) {
+        } catch (Exception e) {         
             throw new Exception("Failed to load image: " + s[0]);
         }
     }
 
     @Override
-    public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
+    public BufferedImage doAction(BufferedImage canva) throws Exception {
 
         if (Scene.getObeyProp())
         canva.getGraphics().drawImage(images.get(image),
-                (int) (parseTimedInt(params[1], normalisedTime, absoluteTime)*Scene.getProp()),
-                (int) (parseTimedInt(params[2], normalisedTime, absoluteTime)*Scene.getProp()),
-                (int) (parseTimedInt(params[3], normalisedTime, absoluteTime)*Scene.getProp()),
-                (int) (parseTimedInt(params[4], normalisedTime, absoluteTime)*Scene.getProp()),
+                (int) (parseTimedInt(params[1])*Scene.getProp()),
+                (int) (parseTimedInt(params[2])*Scene.getProp()),
+                (int) (parseTimedInt(params[3])*Scene.getProp()),
+                (int) (parseTimedInt(params[4])*Scene.getProp()),
                 null, null
         );
         else
             canva.getGraphics().drawImage(images.get(image),
-                    parseTimedInt(params[1], normalisedTime, absoluteTime),
-                    parseTimedInt(params[2], normalisedTime, absoluteTime),
-                    parseTimedInt(params[3], normalisedTime, absoluteTime),
-                    parseTimedInt(params[4], normalisedTime, absoluteTime),
+                    parseTimedInt(params[1]),
+                    parseTimedInt(params[2]),
+                    parseTimedInt(params[3]),
+                    parseTimedInt(params[4]),
                     null, null
             );
         return canva;

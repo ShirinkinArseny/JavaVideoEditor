@@ -20,13 +20,13 @@ public class ApplyMultiply extends Command {
     }
 
     @Override
-    public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
+    public BufferedImage doAction(BufferedImage canva) throws Exception {
 
         short[] modified = new short[256];
         short[] straight = new short[256];
         for (int i = 0; i < 256; i++) {
             straight[i] = (short) i;
-            modified[i] = (short) Math.min(255, (i*parseTimedFloat(color, normalisedTime, absoluteTime)));
+            modified[i] = (short) Math.min(255, (i*parseTimedFloat(color)));
         }
 
         BufferedImageOp multiplyOp;

@@ -22,10 +22,9 @@ public class ApplyBlur extends Command {
         int size_2 = size * size;
         float[][] map = new float[size][size];
         float sizePer2 = size / 2f;
-        float maxLength = sizePer2;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                map[i][j] = Math.max(0, (float) (maxLength - Math.sqrt((i - sizePer2) * (i - sizePer2) + (j - sizePer2) * (j - sizePer2))));
+                map[i][j] = Math.max(0, (float) (sizePer2 - Math.sqrt((i - sizePer2) * (i - sizePer2) + (j - sizePer2) * (j - sizePer2))));
             }
         }
 
@@ -50,8 +49,8 @@ public class ApplyBlur extends Command {
     }
 
     @Override
-    public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
-        int size = parseTimedInt(this.size, normalisedTime, absoluteTime);
+    public BufferedImage doAction(BufferedImage canva) throws Exception {
+        int size = parseTimedInt(this.size);
         if (size > 1) {
             if (size != lastSize) {
                 identity = new ConvolveOp(new Kernel(size, size, getKernel(size)));

@@ -22,30 +22,30 @@ public class DrawEllipse extends Command {
     }
 
     @Override
-    public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
+    public BufferedImage doAction(BufferedImage canva) throws Exception {
         Graphics2D g = (Graphics2D) canva.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
         g.setColor(new Color(
-                parseTimedInt(params[4], normalisedTime, absoluteTime),
-                parseTimedInt(params[5], normalisedTime, absoluteTime),
-                parseTimedInt(params[6], normalisedTime, absoluteTime),
-                parseTimedInt(params[7], normalisedTime, absoluteTime)
+                parseTimedInt(params[4]),
+                parseTimedInt(params[5]),
+                parseTimedInt(params[6]),
+                parseTimedInt(params[7])
         ));
         if (Scene.getObeyProp())
         g.fillOval(
-                (int) (parseTimedInt(params[0], normalisedTime, absoluteTime)*Scene.getProp()),
-                (int) (parseTimedInt(params[1], normalisedTime, absoluteTime)*Scene.getProp()),
-                (int) (parseTimedInt(params[2], normalisedTime, absoluteTime)*Scene.getProp()),
-                (int) (parseTimedInt(params[3], normalisedTime, absoluteTime)*Scene.getProp())
+                (int) (parseTimedInt(params[0])*Scene.getProp()),
+                (int) (parseTimedInt(params[1])*Scene.getProp()),
+                (int) (parseTimedInt(params[2])*Scene.getProp()),
+                (int) (parseTimedInt(params[3])*Scene.getProp())
         );
         else
             g.fillOval(
-                    parseTimedInt(params[0], normalisedTime, absoluteTime),
-                    parseTimedInt(params[1], normalisedTime, absoluteTime),
-                    parseTimedInt(params[2], normalisedTime, absoluteTime),
-                    parseTimedInt(params[3], normalisedTime, absoluteTime)
+                    parseTimedInt(params[0]),
+                    parseTimedInt(params[1]),
+                    parseTimedInt(params[2]),
+                    parseTimedInt(params[3])
             );
         return canva;
     }

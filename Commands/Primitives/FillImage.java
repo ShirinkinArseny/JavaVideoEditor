@@ -8,18 +8,12 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.ArrayList;
 
 public class FillImage extends Command {
 
     private java.awt.image.BufferedImage image;
+    //todo: list (like in drawImage)
     private String[] params;
-
-    public ArrayList<String> getUsedFilesList() {
-        ArrayList<String> urls = new ArrayList<>();
-        urls.add(params[0]);
-        return urls;
-    }
 
     public FillImage(String[] s) throws Exception {
         params = new String[s.length];
@@ -35,11 +29,11 @@ public class FillImage extends Command {
     }
 
     @Override
-    public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
-        int dx = parseTimedInt(params[1], normalisedTime, absoluteTime);
-        int dy = parseTimedInt(params[2], normalisedTime, absoluteTime);
-        int w = parseTimedInt(params[3], normalisedTime, absoluteTime);
-        int h = parseTimedInt(params[4], normalisedTime, absoluteTime);
+    public BufferedImage doAction(BufferedImage canva) throws Exception {
+        int dx = parseTimedInt(params[1]);
+        int dy = parseTimedInt(params[2]);
+        int w = parseTimedInt(params[3]);
+        int h = parseTimedInt(params[4]);
 
         Graphics g = canva.getGraphics();
 

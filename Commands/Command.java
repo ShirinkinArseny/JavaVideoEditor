@@ -2,15 +2,11 @@ package JVE.Commands;
 
 import JVE.Parsers.MathParser;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public abstract class Command {
 
-    public abstract BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception;
-
-    private static Color c;
-    private static Font f;
+    public abstract BufferedImage doAction(BufferedImage canva) throws Exception;
 
     public short[][] divideChanels(short[] straight, short[] effected, String[] args) {
         if (args.length == 0)
@@ -42,15 +38,11 @@ public abstract class Command {
         return chanelMap;
     }
 
-    public String setTimes(String s, float nTime, float aTime) {
-        return s.replaceAll("normalTime", String.valueOf(nTime)).replaceAll("absoluteTime", String.valueOf(aTime));
+    public int parseTimedInt(String s) throws Exception {
+        return MathParser.parseInt(s);
     }
 
-    public int parseTimedInt(String s, float nTime, float aTime) throws Exception {
-        return MathParser.parseInt(setTimes(s, nTime, aTime));
-    }
-
-    public float parseTimedFloat(String s, float nTime, float aTime) throws Exception {
-        return MathParser.parseFloat(setTimes(s, nTime, aTime));
+    public float parseTimedFloat(String s) throws Exception {
+        return MathParser.parseFloat(s);
     }
 }

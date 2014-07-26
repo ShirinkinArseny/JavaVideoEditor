@@ -17,12 +17,12 @@ public class ApplyRotate extends Command {
     }
 
     @Override
-    public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
+    public BufferedImage doAction(BufferedImage canva) throws Exception {
         Graphics2D g2 = (Graphics2D) canva.getGraphics();
         g2.rotate(
-                parseTimedFloat(params[0], normalisedTime, absoluteTime),
-                parseTimedFloat(params[1], normalisedTime, absoluteTime),
-                parseTimedFloat(params[2], normalisedTime, absoluteTime));
+                parseTimedFloat(params[0]),
+                parseTimedFloat(params[1]),
+                parseTimedFloat(params[2]));
         return canva;
     }
 }

@@ -3,13 +3,14 @@ package JVE.Parsers;
 import JVE.Commands.Primitives.DrawImage;
 import JVE.Rendering.RenderEvent;
 import JVE.Rendering.Scene;
+import JVE.Utils;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import static JVE.Parsers.Macros.parseMacros;
 import static JVE.Parsers.MathParser.addInjection;
-import static JVE.Parsers.ParseUtils.*;
+import static JVE.Utils.*;
 import static JVE.Parsers.Preprocess.preprocess;
 import static JVE.Parsers.SceneBlockParser.parseSceneBlock;
 import static JVE.Parsers.VideoBlockParser.parseVideoBlock;
@@ -29,6 +30,10 @@ public class Video {
         return fps;
     }
 
+    public static String getAudio() {
+        return audio;
+    }
+
     public static int getFrames() {
         return frames;
     }
@@ -37,12 +42,31 @@ public class Video {
     private static int h = 600;
     private static int fps = 30;
     private static int frames;
+    private static String audio=null;
     private static ArrayList<Scene> scenes;
+
+    private static String tempDir=null;
+    private static String tempDirForIncludes=null;
+
+    public static void setTempDir(String dir) {
+        tempDir=dir;
+        if (!tempDir.endsWith("/"))
+            tempDir+='/';
+        tempDirForIncludes=tempDir+"includes/";
+    }
+
+    public static String getTempDir() {
+        return tempDir;
+    }
+
+    public static String getTempDirForIncludes() {
+        return tempDirForIncludes;
+    }
 
     public Video(String url, RenderEvent r) throws Exception {
         MathParser.init();
         DrawImage.init();
-        ParseUtils.cleanPathes();
+        Utils.cleanPathes();
         scenes = new ArrayList<>();
         frames=0;
 
@@ -86,8 +110,21 @@ public class Video {
 
             if (code.get(i).startsWith("\\addFilePath")) {
                 String res = getArguments(code.get(i))[0];
-                ParseUtils.addPath(res);
+                Utils.addPath(res);
                 printMessage("Add path: " + res);
+                continue;
+            }
+
+            if (code.get(i).startsWith("\\audio")) {
+                audio = getArguments(code.get(i))[0];
+                printMessage("Audio set to " + audio);
+                continue;
+            }
+
+            if (code.get(i).startsWith("\\tempDir")) {
+                String tmpDir=getArguments(code.get(i))[0];
+                setTempDir(tmpDir);
+                printMessage("Temp directory set to " + tmpDir);
                 continue;
             }
 
@@ -105,7 +142,7 @@ public class Video {
                         parseVideoBlock(s, r);
                         for (Scene scene: scenes)
                             frames+=scene.getFrames();
-                        ParseUtils.printMessage("All scenes are parsed");
+                        Utils.printMessage("All scenes are parsed");
                         return;
                     }
                 }

@@ -23,8 +23,7 @@ public class DrawString extends Command {
     private static Font setFontSize(Font d, FontRenderContext frc, String[] text, float width) {
         String longestText=text[0];
         for (String s: text)
-        if (s.length()>longestText.length())  //todo: there will be bug, when
-        // longest by symbols be less, than longest by font width
+        if (s.length()>longestText.length())  //todo: there will be bug
         //F.e. in some fonts "WWWWWWWWWW" will be longer, than "..........."
             longestText=s;
 
@@ -32,7 +31,6 @@ public class DrawString extends Command {
             double textwidth = d.deriveFont(i).getStringBounds(longestText, frc).getWidth();
             if (textwidth>width) {
                 return d.deriveFont(i-1);
-                //todo: вместо перебора приделать метод половинного деления
             }
         }
         return null;
@@ -89,16 +87,16 @@ public class DrawString extends Command {
     }
 
     @Override
-    public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
+    public BufferedImage doAction(BufferedImage canva) throws Exception {
         Graphics2D g = (Graphics2D) canva.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
         g.setColor(new Color(
-                parseTimedInt(params[5], normalisedTime, absoluteTime),
-                parseTimedInt(params[6], normalisedTime, absoluteTime),
-                parseTimedInt(params[7], normalisedTime, absoluteTime),
-                parseTimedInt(params[8], normalisedTime, absoluteTime)
+                parseTimedInt(params[5]),
+                parseTimedInt(params[6]),
+                parseTimedInt(params[7]),
+                parseTimedInt(params[8])
         ));
 
             float scale;
@@ -120,32 +118,32 @@ public class DrawString extends Command {
             float x = 0;
             switch (currentFormatting) {
                 case left:
-                    x = parseTimedInt(params[1], normalisedTime, absoluteTime) * scale;
+                    x = parseTimedInt(params[1]) * scale;
                     break;
                 case center:
-                    x = (float) (parseTimedInt(params[1], normalisedTime, absoluteTime) * scale
+                    x = (float) (parseTimedInt(params[1]) * scale
                             - getFontWidth(f, g.getFontRenderContext(), text[i]) / 2);
                     break;
                 case right:
-                    x = (float) (parseTimedInt(params[1], normalisedTime, absoluteTime) * scale
+                    x = (float) (parseTimedInt(params[1]) * scale
                             - getFontWidth(f, g.getFontRenderContext(), text[i]));
                     break;
                 case leftLimited:
-                    x = parseTimedInt(params[1], normalisedTime, absoluteTime) * scale;
+                    x = parseTimedInt(params[1]) * scale;
                     break;
                 case centerLimited:
-                    x = (float) (parseTimedInt(params[1], normalisedTime, absoluteTime) * scale
+                    x = (float) (parseTimedInt(params[1]) * scale
                             - getFontWidth(f, g.getFontRenderContext(), text[i]) / 2);
                     break;
                 case rightLimited:
-                    x = (float) (parseTimedInt(params[1], normalisedTime, absoluteTime) * scale
+                    x = (float) (parseTimedInt(params[1]) * scale
                             - getFontWidth(f, g.getFontRenderContext(), text[i]));
                     break;
             }
 
             g.drawString(
                     text[i], x,
-                    (parseTimedInt(params[2], normalisedTime, absoluteTime)+f.getSize()*i) * scale
+                    (parseTimedInt(params[2])+f.getSize()*i) * scale
             );
         }
         return canva;

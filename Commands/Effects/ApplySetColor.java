@@ -20,11 +20,11 @@ public class ApplySetColor extends Command {
     }
 
     @Override
-    public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
+    public BufferedImage doAction(BufferedImage canva) throws Exception {
 
         short[] modified = new short[256];
         short[] straight = new short[256];
-        short value = (short) (Math.min(255, parseTimedFloat(color, normalisedTime, absoluteTime)));
+        short value = (short) (Math.min(255, parseTimedFloat(color)));
         for (int i = 0; i < 256; i++) {
             modified[i] = value;
             straight[i] = (short) i;

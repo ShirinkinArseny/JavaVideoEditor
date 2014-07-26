@@ -3,7 +3,7 @@ package JVE.Parsers;
 import java.io.File;
 import java.util.ArrayList;
 
-import static JVE.Parsers.ParseUtils.*;
+import static JVE.Utils.*;
 
 public class Preprocess {
 

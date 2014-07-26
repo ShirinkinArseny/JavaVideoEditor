@@ -1,0 +1,73 @@
+\frameSize{1920, 1080}
+\frameRatio{25}
+\tempDir{/home/nameless/Desktop/temp/}%put your tempdir here
+
+\injectJS{function tripleBezierCurve(t, from, to) {
+        t1=(1-t);
+        t1_2=(1-t)*t1;
+        t_2=t*t;
+        return from*t1*t1_2+3*from*t*t1_2+3*to*t_2*t1+to*t_2*t;
+    }}
+        
+\injectJS{function normalise(t, lim1, lim2) {
+	if (t<lim1) return 0;
+	else if (t>lim2) return 1;
+	else return (t-lim1)/(lim2-lim1);
+    }}
+
+\begin{video}
+
+\begin{scene}
+    \duration{1.5}
+    \name{Title}
+    \drawRectangle{0, 0, 1920, 1080, 255, 255, 255, 255}
+    \drawString{Java Video Editor, 300, 300+quadParabolicFadeOut*300, DejaVu Sans Light, 140, 35, 35, 35, 255*normalTime}
+\end{scene}
+
+\begin{scene}
+    \duration{1.5}
+    \name{List}
+    \drawRectangle{0, 0, 1920, 1080, 255, 255, 255, 255}
+    \drawString{Java Video Editor, 300, 300, DejaVu Sans Light, 140, 35, 35, 35, 255}
+
+    \injectJS{value=normalise(normalTime, 0, 0.6)}
+    \drawString{-free, tripleBezierCurve(value, 200, 350), 450, DejaVu Sans Light, 70, 35, 35, 35, 255*value}
+    \injectJS{value=normalise(normalTime, 0.2, 0.8)}
+    \drawString{-simple, tripleBezierCurve(value, 200, 350), 550, DejaVu Sans Light, 70, 35, 35, 35, 255*value}
+    \injectJS{value=normalise(normalTime, 0.4, 1)}
+    \drawString{-slow :c, tripleBezierCurve(value, 200, 350), 650, DejaVu Sans Light, 70, 35, 35, 35, 255*value}
+\end{scene}
+
+\begin{scene}
+    \duration{1.5}
+    \name{Rise}
+    \drawRectangle{0, 0, 1920, 1080, 255, 255, 255, 255}
+    \begin{layer}
+        \drawRectangle{0, 0, 1920, 1080}
+        \drawString{Java Video Editor, 300, 300, DejaVu Sans Light, 140, 35, 35, 35, 255}
+        \drawString{-free, 350, 450, DejaVu Sans Light, 70, 35, 35, 35}
+        \drawString{-simple, 350, 550}
+        \drawString{-slow :c, 350, 650}
+        \move{quadParabolicFadeIn*400, 0}
+        \multiply{1-normalTime, alpha}
+    \end{layer}
+    \drawRectangle{0, 0, 1920, 1080, 0, 0, 0, normalTime*20}
+    \drawRectangle{-1920+1920*quadParabolicFadeIn, 0, 1920, 1080, 200, 255, 200, 255}
+    \drawRectangle{tripleBezierCurve(normalTime, -2000, 200), 180, 1920, 170, 200, 255, 200, 255}
+    \drawString{Automate everything:, tripleBezierCurve(normalise(normalTime, 0.2, 1), -2000, 200), 300, DejaVu Sans Light, 140, 35, 35, 35, 255*normalTime}
+\end{scene}
+
+\begin{scene}
+    \duration{5}
+    \name{Stuff}
+    \drawRectangle{0, 0, 1920, 1080, 200, 255, 200, 255}
+    \drawString{Automate everything:, 200, 300, DejaVu Sans Light, 140, 35, 35, 35, 255}
+    
+    \drawString{Coordinates, normalTime*2500-600, 500, DejaVu Sans Light, 100, 35, 35, 35, 255}
+    
+    \drawString{Color,300, 600, DejaVu Sans Light, 100, 510*(0.5-abs(0.5-normalTime)), 255*normalTime, 255*abs(0.5-normalTime), 255*normalise(normalTime, 0, 0.1)}
+    
+    \drawString{Size, 300, 700, DejaVu Sans Light, normalTime*400, 35, 35, 35, 255*(0.5-abs(0.5-normalTime))}    
+\end{scene}
+
+\end{video}

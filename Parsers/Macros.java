@@ -5,7 +5,7 @@ import JVE.Rendering.SceneLayer;
 import java.util.ArrayList;
 
 import static JVE.Parsers.LayerBlockParser.parseLayerBlock;
-import static JVE.Parsers.ParseUtils.getArguments;
+import static JVE.Utils.getArguments;
 
 public class Macros {
 

@@ -20,14 +20,14 @@ public class ApplyParametricSetColor extends Command {
     }
 
     @Override
-    public BufferedImage doAction(BufferedImage canva, float normalisedTime, float absoluteTime) throws Exception {
+    public BufferedImage doAction(BufferedImage canva) throws Exception {
 
         short[] modified = new short[256];
         short[] straight = new short[256];
         for (int i = 0; i < 256; i++) {
             straight[i] = (short) i;
             String temp = color.replaceAll("param", String.valueOf(i));
-            modified[i] = (short) parseTimedInt(temp, normalisedTime, absoluteTime);
+            modified[i] = (short) parseTimedInt(temp);
         }
 
         BufferedImageOp multiplyOp;
