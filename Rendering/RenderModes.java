@@ -70,14 +70,14 @@ public class RenderModes {
 
         changes.run(0);
         for (Scene s : scenes) {
-            s.renderAndSave(framesCount, changes);
+            s.renderAndSave(changes);
             framesCount += s.getFrames();
             scenesDone++;
             Utils.printMessage("Framerender: ready " + framesCount + "/" + summary + " frames, " + scenesDone + "/" + scenes.size() + " scenes");
             changes.run(framesCount*1f/summary);
         }
 
-        Render.renderFromFrames_ffmpeg(Video.getTempDir() + "out.mp4");
+        FFMpegUsage.renderFromFrames_ffmpeg(Video.getTempDir() + "out.mp4");
     }
 
     public static void renderServerScenes(ArrayList<Scene> scenes, RenderEvent changes) throws Exception {
@@ -133,7 +133,7 @@ public class RenderModes {
                     printMessage("Remaining " + (scenes.size() - number[0]) + " scenes");
                 } else {
                     if (dutiesCount[0] == 0) {
-                        Render.renderFromVideos_ffmpeg(srcSize, "Out.mp4");
+                        FFMpegUsage.renderFromVideos_ffmpeg(srcSize, "Out.mp4");
                         printMessage("All scenes are rendered");
                     }
 
@@ -166,11 +166,12 @@ public class RenderModes {
                     ArrayList<String> src = new ArrayList<>();
                     Collections.addAll(src, code);
                     printMessage("Arguments divided");
-                    Scene s = SceneBlockParser.parseSceneBlock(src);
+                    //todo: starttime
+                    Scene s = SceneBlockParser.parseSceneBlock(src, 0, 0);
                     printMessage("Scene parsed");
-                    s.renderAndSave(0, changes);
+                    s.renderAndSave(changes);
                     printMessage("Scene has been rendered");
-                    Render.renderFromFrames_ffmpeg("Scene.mp4");
+                    FFMpegUsage.renderFromFrames_ffmpeg("Scene.mp4");
                     c.sendFile(new File(Video.getTempDir() + "Scene.mp4"));
                     printMessage("MP4 sent");
                     c.sendMessage("DONE");

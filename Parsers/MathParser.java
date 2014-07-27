@@ -10,7 +10,7 @@ public class MathParser {
 
     public static void init() throws ScriptException {
         engine = new ScriptEngineManager().getEngineByName("JavaScript");
-        setTimes(0, 0);
+        setTimes(0, 0, 0);
     }
 
     public static String prepareExpression(String s) {
@@ -67,8 +67,9 @@ public class MathParser {
         injectCode(s);
     }
 
-    public static void setTimes(float nTime, float aTime) throws ScriptException {
+    public static void setTimes(float nTime, float aTime, float aVideoTime) throws ScriptException {
         engine.eval("normalTime=" + nTime);
         engine.eval("absoluteTime=" + aTime);
+        engine.eval("absoluteVideoTime=" + aVideoTime);
     }
 }

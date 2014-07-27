@@ -1,7 +1,5 @@
 package JVE.Rendering;
 
-import JVE.Utils;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -14,7 +12,7 @@ public class ShellUsing {
             InputStream shellIn = shell.getInputStream();
             int c;
             while ((c = shellIn.read()) != -1) {
-                Utils.printMessage(c);
+                //Utils.printMessage(c);
             }
             shellIn.close();
     }

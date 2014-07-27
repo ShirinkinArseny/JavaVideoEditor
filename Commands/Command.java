@@ -2,11 +2,29 @@ package JVE.Commands;
 
 import JVE.Parsers.MathParser;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.RGBImageFilter;
+import java.io.IOException;
 
 public abstract class Command {
 
     public abstract BufferedImage doAction(BufferedImage canva) throws Exception;
+
+    public static BufferedImage applyRGBFilter(BufferedImage canva, RGBImageFilter f) throws IOException {
+
+        Image image = Toolkit.getDefaultToolkit().createImage(new FilteredImageSource(
+                canva.getSource(), f));
+
+
+        BufferedImage bimage = new BufferedImage(image.getWidth(null), image.getHeight(null),
+                BufferedImage.TYPE_INT_ARGB);
+        Graphics2D bGr = bimage.createGraphics();
+        bGr.drawImage(image, 0, 0, null);
+
+        return bimage;
+    }
 
     public short[][] divideChanels(short[] straight, short[] effected, String[] args) {
         if (args.length == 0)

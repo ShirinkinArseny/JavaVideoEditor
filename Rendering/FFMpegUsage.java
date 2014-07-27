@@ -3,11 +3,22 @@ package JVE.Rendering;
 import JVE.Parsers.Video;
 import JVE.Utils;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileWriter;
 
 import static JVE.Utils.cleanByMask;
 
-public class Render {
+public class FFMpegUsage {
+
+    public static BufferedImage makeFrame(String video, float time) throws Exception {
+        String command="cd "+Video.getTempDirForIncludes()+" && ffmpeg " +
+                "-i "+video+" -ss "+time+" -vframes 1  -y frame.png";
+        Utils.printMessage("Running: " + command);
+        ShellUsing.runCommand(command);
+        return ImageIO.read(new File(Video.getTempDirForIncludes()+"frame.png"));
+    }
 
     public static void renderFromFrames_ffmpeg(String filename) {
         try {

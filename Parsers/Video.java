@@ -6,15 +6,15 @@ import JVE.Rendering.Scene;
 import JVE.Utils;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 
 import static JVE.Parsers.Macros.parseMacros;
 import static JVE.Parsers.MathParser.addInjection;
-import static JVE.Utils.*;
 import static JVE.Parsers.Preprocess.preprocess;
-import static JVE.Parsers.SceneBlockParser.parseSceneBlock;
 import static JVE.Parsers.VideoBlockParser.parseVideoBlock;
 import static JVE.Rendering.RenderModes.*;
+import static JVE.Utils.*;
 
 public class Video {
 
@@ -48,11 +48,13 @@ public class Video {
     private static String tempDir=null;
     private static String tempDirForIncludes=null;
 
-    public static void setTempDir(String dir) {
+    public static void setTempDir(String dir) throws Exception {
         tempDir=dir;
         if (!tempDir.endsWith("/"))
             tempDir+='/';
         tempDirForIncludes=tempDir+"includes/";
+        cleanDirectory(new File(tempDir));
+        cleanDirectory(new File(tempDirForIncludes));
     }
 
     public static String getTempDir() {
@@ -200,8 +202,8 @@ public class Video {
         return scenes.size();
     }
 
-    static void addScene(ArrayList<String> code) throws Exception{
-        scenes.add(parseSceneBlock(code));
+    static void addScene(Scene s) throws Exception{
+        scenes.add(s);
     }
 
     public static void setBases(int fps, int w, int h) {

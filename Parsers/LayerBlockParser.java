@@ -54,6 +54,9 @@ public class LayerBlockParser {
                 case "\\drawImage":
                     s.addCommand(new DrawImage(getArguments(code.get(i))));
                     break;
+                case "\\drawVideo":
+                    s.addCommand(new DrawVideoFrame(getArguments(code.get(i))));
+                    break;
                 case "\\fillImage":
                     s.addCommand(new FillImage(getArguments(code.get(i))));
                     break;
@@ -65,6 +68,12 @@ public class LayerBlockParser {
                     break;
                 case "\\negate":
                     s.addCommand(new ApplyNegate(getArguments(code.get(i))));
+                    break;
+                case "\\remixChanels":
+                    s.addCommand(new ApplyRemix(getArguments(code.get(i))));
+                    break;
+                case "\\remixChanel":
+                    s.addCommand(new ApplyRemixChanel(getArguments(code.get(i))));
                     break;
                 case "\\multiply":
                     s.addCommand(new ApplyMultiply(getArguments(code.get(i))));

@@ -43,9 +43,7 @@ public class Utils {
         String[] files = dir.list();
         for (String file : files) {
             File f = new File(dir, file);
-            if (f.isDirectory()) {
-                cleanDirectory(f);
-            } else {
+            if (!f.isDirectory()) {
                 if (!f.delete())
                     throw new Exception("Can't delete file: "+f.getName());
             }

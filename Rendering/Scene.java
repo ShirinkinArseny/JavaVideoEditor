@@ -11,10 +11,10 @@ import static JVE.Parsers.MathParser.setTimes;
 
 public class Scene extends SceneLayer {
 
-    private float fps;
     private float duration;
+    private int startFrame;
+    private float startSec;
     private int frames;
-    private int width, height;
     private String source;
     private String name;
 
@@ -44,16 +44,16 @@ public class Scene extends SceneLayer {
         return "frame"+num+".png";
     }
 
-    public void renderAndSave(int startFrame, RenderEvent changes) throws Exception {
+    public void renderAndSave(RenderEvent changes) throws Exception {
         for (int i=0; i<frames; i++) {
-                    ImageIO.write(render(i), "png", new File(Video.getTempDir()+getFileName(startFrame + i)));
+            ImageIO.write(render(i), "png", new File(Video.getTempDir() +getFileName(startFrame + i)));
                     if (i%25==0) changes.run((startFrame+i)*1f/ Video.getFrames());
         }
-        }
+    }
 
     public BufferedImage render(int frameNum) throws Exception {
         makePreview=false;
-        BufferedImage f=new BufferedImage(width, height, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        BufferedImage f=new BufferedImage(Video.getW(), Video.getH(), java.awt.image.BufferedImage.TYPE_INT_ARGB);
         return getRendered(f, frameNum);
     }
 
@@ -70,14 +70,15 @@ public class Scene extends SceneLayer {
     public BufferedImage render(int frameNum, float prop) throws Exception {
         makePreview=true;
         Scene.prop=prop;
-        BufferedImage f=new BufferedImage((int)(width*prop), (int)(height*prop), java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        BufferedImage f=new BufferedImage((int)(Video.getW()*prop), (int)(Video.getH()*prop), java.awt.image.BufferedImage.TYPE_INT_ARGB);
         return getRendered(f, frameNum);
     }
 
     private BufferedImage getRendered(BufferedImage bg, int frameNum) throws Exception {
         float timeNormalised=frameNum*1.0f/frames;
         float absoluteTime=duration*timeNormalised;
-        setTimes(timeNormalised, absoluteTime);
+        float absoluteVideoTime=startSec+absoluteTime;
+        setTimes(timeNormalised, absoluteTime, absoluteVideoTime);
         return super.render(bg);
     }
 
@@ -85,15 +86,18 @@ public class Scene extends SceneLayer {
         return frames;
     }
 
-    public void setDuration(float dur) {
-        duration=dur;
-        frames= (int) (dur*fps);
+    public float getDuration() {
+        return duration;
     }
 
-    public Scene(float fps, int w, int h) {
-        this.fps=fps;
-        width=w;
-        height=h;
+    public void setDuration(float dur) {
+        duration=dur;
+        frames= (int) (dur*Video.getFPS());
+    }
+
+    public Scene(int startFrame, float startSec) {
+        this.startFrame=startFrame;
+        this.startSec=startSec;
     }
 
 }

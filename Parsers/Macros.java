@@ -18,7 +18,7 @@ public class Macros {
         return source;
     }
 
-    public Macros(String name, String[] params, ArrayList<String> code, ArrayList<String> src) {
+    public Macros(String name, String[] params, ArrayList<String> code, ArrayList<String> src) throws Exception {
         this.name=name;
         this.params=params;
         this.code=code;
@@ -68,13 +68,13 @@ public class Macros {
         for (String s: code2)
         code.add(s);
 
-            String name = null;
+            String name;
             if (code.get(0).startsWith("\\name")) {
                 name = getArguments(code.get(0))[0];
                 code.remove(0);
             } else
                 throw new Exception("Command before setting name: [" + code.get(0) + "] ");
-            String[] params = new String[0];
+            String[] params;
             if (code.get(0).startsWith("\\params")) {
                 params = getArguments(code.get(0));
                 code.remove(0);
